@@ -1,0 +1,295 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  text-decoration: none;
+  list-style-type: none;
+  outline: none;
+  -webkit-tap-highlight-color: transparent;
+  font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+}
+
+.sms-mb {
+  margin-bottom: 1.5rem !important;
+}
+
+.sms-nav-chevron {
+  color: #248bf5;
+  font-size: 1.6rem;
+}
+
+.sms-nav-header {
+  background-color: #f9f9f9;
+  border-bottom: 0.01rem #7a7a78 solid;
+  position: fixed;
+  opacity: 95%;
+  width: 100%;
+  z-index: 10;
+  padding: 0.2rem 0.6rem;
+}
+
+.sms-nav-main {
+  display: grid;
+  align-items: center;
+  grid-template-columns: 1fr repeat(3, auto) 1fr;
+}
+
+.sms-nav-back {
+  display: flex;
+  cursor: pointer;
+  align-items: center;
+}
+
+.sms-nav-main ul li {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  border: 2px solid #f9f9f9;
+  display: inline-block;
+  position: relative;
+  /* box-shadow: 0px 1px 3px 0px rgba(0, 0, 0, 0.2); */
+  -webkit-transition: 0.2s ease;
+  transition: 0.2s ease;
+}
+
+.sms-nav-main ul li img {
+  border-radius: 50%;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.sms-nav-main ul li:nth-child(n + 2) {
+  margin-left: -20px;
+}
+
+.sms-nav-main .ulAnimate ul li:nth-child(n + 2) {
+  margin-left: -10px;
+}
+
+.badge {
+  padding: 2px 8px;
+  border-radius: 50px;
+  background: #248bf5;
+  color: white;
+  font-size: 0.8rem;
+}
+
+.flex-center {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.no-display {
+  display: none;
+}
+
+.sms-nav-dropdown {
+  display: flex;
+  width: 100%;
+  align-items: center;
+  justify-content: center;
+  margin: 0.4rem 0;
+}
+
+.sms-nav-dropdown li {
+  padding: 0 1.2rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.sms-nav-dropdown li p {
+  font-size: 0.6rem;
+  color: #989898;
+}
+
+.circle-icon {
+  background: #989898;
+  color: white;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  text-align: center;
+  line-height: 12px;
+  vertical-align: middle;
+  padding: 4px;
+}
+
+.chat-window {
+  /* font-family: -apple-system, BlinkMacSystemFont, sans-serif; */
+  /* font-size: 2.8rem; */
+  display: flex;
+  flex-direction: column;
+  padding: 5rem 1.2rem 1.2rem;
+}
+
+.sms-container {
+  display: inherit;
+  flex-direction: column;
+  max-width: 75%;
+  margin: 0.1rem 0;
+}
+
+.sms-message {
+  width: fit-content;
+  position: relative;
+  border-radius: 20px;
+  padding: 8px 12px;
+}
+
+.sms-sender {
+  align-self: flex-end;
+}
+
+.sms-sender .sms-message-container {
+  display: inherit;
+  flex-direction: row;
+  align-self: flex-end;
+}
+
+.error {
+  align-self: center;
+  color: red;
+  margin-left: 0.5rem;
+  font-size: 1.5rem;
+}
+
+.sms-sender .sms-header,
+.sms-sender .sms-footer {
+  align-self: flex-end;
+}
+
+.sms-title {
+  text-align: center;
+  margin-bottom: 1.5rem;
+}
+
+.sms-header,
+.sms-footer,
+.sms-title {
+  font-size: 0.7rem;
+  padding: 0 0.8rem;
+  color: #656565;
+}
+
+.sms-sender .sms-message {
+  margin-left: auto;
+  color: white;
+  background: #248bf5;
+}
+
+.sms-sender .sms-message.tail:before {
+  content: '';
+  position: absolute;
+  z-index: 0;
+  bottom: 0;
+  right: -7px;
+  height: 18px;
+  width: 20px;
+  border-bottom-left-radius: 15px;
+  background: #248bf5;
+
+  /* background: green; */
+}
+
+.sms-sender .sms-message.tail:after {
+  content: '';
+  position: absolute;
+  z-index: 1;
+  bottom: -1px;
+  right: -8px;
+  height: 21px;
+  width: 8px;
+  background: white;
+  /* background: red; */
+  border-bottom-left-radius: 25px;
+}
+
+.sms-recipient {
+  align-self: flex-start;
+}
+
+.sms-recipient .sms-message-container {
+  display: inherit;
+  flex-direction: row-reverse;
+  align-self: flex-start;
+}
+
+.sms-recipient .sms-message {
+  background-color: #e8e8ea;
+}
+
+.sms-recipient .sms-message.tail:before {
+  content: '';
+  position: absolute;
+  z-index: 0;
+  bottom: -1px;
+  left: -8px;
+  height: 18px;
+  width: 20px;
+  background: #e8e8ea;
+  border-bottom-right-radius: 15px;
+}
+
+.sms-recipient .sms-message.tail:after {
+  content: '';
+  position: absolute;
+  z-index: 1;
+  bottom: -1px;
+  left: -8px;
+  height: 19px;
+  width: 8px;
+  background: white;
+  border-bottom-right-radius: 25px;
+}
+
+.sms-avatar-wrapper {
+  display: inherit;
+  width: 2rem;
+  border-radius: 50%;
+  margin-right: 0.5rem;
+  align-self: flex-end;
+}
+
+.sms-avatar-wrapper img {
+  border-radius: 50%;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.group .sms-header,
+.group .sms-footer {
+  margin-left: 2.3rem;
+}
+
+.sms-nav-recipients {
+  font-size: 0.8rem;
+}
+
+.sms-nav-recipients-chevron {
+  font-size: 0.6rem;
+  color: #7a7a78;
+  width: 0.5rem;
+  padding-left: 0.2rem;
+}
+
+.auto-grow-input:focus-within {
+  outline: -webkit-focus-ring-color auto 1px;
+}
+
+footer {
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+}
+
+textarea {
+  font-size: 1.2rem;
+  width: 100%;
+  /* overflow: hidden;
+  word-wrap: break-word;
+  resize: vertical; */
+}
