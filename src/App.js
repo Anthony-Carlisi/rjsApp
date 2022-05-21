@@ -1,16 +1,10 @@
-import {
-  BrowserRouter as Router,
-  // Route,
-  // Routes,
-  //  NavLink,
-} from 'react-router-dom'
-import SmsChatWindow from './components/SmsChatWindow'
-import Test from './components/Test'
+import { BrowserRouter as Router } from 'react-router-dom'
+import Navbar from './components/Navbar'
 
 function App() {
   return (
     <Router>
-      <Test />
+      <Navbar />
     </Router>
   )
 }
