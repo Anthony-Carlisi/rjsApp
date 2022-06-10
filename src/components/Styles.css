@@ -94,3 +94,61 @@
   margin: 0.8rem;
   color: #72767a;
 }
+
+.entityTypeCard {
+  margin: 30px;
+  width: 15rem;
+  height: 10rem;
+  padding: 2rem;
+  border-radius: 5px;
+  border: solid #dee3e7 1px;
+  background: #fff;
+  cursor: pointer;
+}
+.entityTypeCard:hover {
+  transform: scale(1.1);
+  transition-duration: 0.2s;
+  background: #a5ccf79c;
+  box-shadow: 0px 0px 20px 0px #a9a9a9;
+  z-index: 3;
+  border-color: #007bff !important;
+}
+.entityTypeCard div {
+  padding-top: 15px;
+  font-size: 1.2rem;
+  color: #1f4058;
+}
+.entityTypeCard > * {
+  pointer-events: none;
+}
+
+.flexBox {
+  /* background: gray; */
+  width: 100%;
+  display: flex;
+  flex-flow: row wrap;
+  justify-content: center;
+  position: relative;
+}
+.flexBoxHeader {
+  /* background: gray; */
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+}
+.headerTitle {
+  color: #46494b;
+  max-width: 800px;
+  text-align: center;
+  padding: 10px 20px;
+}
+
+.headerTopTitle {
+  color: #265373;
+  max-width: 800px;
+  text-align: center;
+  padding: 10px 20px;
+}
