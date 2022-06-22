@@ -1,0 +1,111 @@
+/* Input style */
+.inputContainer {
+  position: relative;
+  display: flex;
+  margin: 10px;
+  border-radius: 4px;
+  box-shadow: 0 2px 2px 0 #dee3e7;
+}
+
+.inputContainer div {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 50px;
+  background-color: #dee3e7;
+  border-radius: 4px 0 0 4px;
+  border: #a9a9a9 1px solid;
+  border-right: 0;
+  /* font-size: 30px; */
+  color: #1f4058;
+}
+
+.inputContainer:focus-within div {
+  background: #484eea;
+  border: #484eea 1px solid;
+  border-right: 0;
+  color: #fff;
+}
+
+.inputContainer div.filled {
+  background: #484eea;
+  border: #484eea 1px solid;
+  border-right: 0;
+  color: #fff;
+}
+
+.inputLabel {
+  position: absolute;
+  text-align: left !important;
+  pointer-events: none;
+  transform: translate(0, 15px) scale(1);
+  transform-origin: top left;
+  transition: 200ms cubic-bezier(0, 0, 0.2, 1) 0ms;
+  color: #6f81a5;
+  font-size: 24px;
+  line-height: 1;
+  width: 100%;
+  left: 15px;
+  background: none;
+}
+
+.inputError {
+  position: absolute;
+  text-align: start;
+  pointer-events: none;
+  transform: translate(-0, 55px);
+  color: red;
+  font-size: 14px;
+  line-height: 1;
+  /* width: 100%; */
+  /* left: 60px; */
+  background: none;
+}
+
+.inputContainer:focus-within .inputLabel {
+  transform: translate(0, 5px) scale(0.8);
+  color: #0a53e4;
+}
+
+.inputLabel.filled {
+  transform: translate(0, 5px) scale(0.8);
+}
+
+.inputContainer input {
+  border-radius: 4px;
+  border: #a9a9a9 1px solid;
+  padding: 24px 16px 4px 16px;
+  font-size: 18px;
+  transition: 200ms cubic-bezier(0, 0, 0.2, 1) 0ms;
+  background: #fff;
+}
+
+.inputContainer:focus-within input {
+  border: #484eea 1px solid;
+}
+
+.symbol .inputLabel {
+  left: 65px;
+}
+
+.symbol input {
+  border-left: 0;
+  border-radius: 0px 4px 4px 0px;
+}
+
+.inputContainer:focus-within.symbol input {
+  border: #484eea 1px solid;
+  border-left: 0;
+}
+.inputContainer:focus-within.symbol .inputIcon {
+  color: #fff;
+}
+
+.test {
+  color: #fff;
+  background-color: #484eea;
+}
+
+.inputIcon {
+  background: none;
+}

@@ -8,8 +8,10 @@ import {
   faUserTie,
   faArrowLeft,
   faArrowRight,
+  faDollarSign,
 } from '@fortawesome/free-solid-svg-icons'
 import './Styles.css'
+import InputField from './assets/InputField'
 
 function Landingpage() {
   // eslint-disable-next-line
@@ -17,8 +19,20 @@ function Landingpage() {
   const [currentQuestion, setCurrentQuestion] = useState(0)
   const [requestedAmount, setRequestedAmount] = useState('')
   const [month, setMonth] = useState('')
+  const [year, setYear] = useState('')
   const [continueButtonState, setContinueButtonState] = useState(true)
   const [monthSelect, setMonthSelect] = useState(false)
+  const [inputError, setInputError] = useState({
+    label: '',
+    value: false,
+  })
+
+  const onKeyPress = (e) => {
+    if (e.key === 'Enter' && continueButtonState === false) {
+      setCurrentQuestion(currentQuestion + 1)
+      setContinueButtonState(true)
+    }
+  }
 
   // List of entity info
   const entityInfo = [
@@ -85,7 +99,7 @@ function Landingpage() {
   ]
 
   // Sets Value for Currency
-  const currencyValueDisplay = (e) => {
+  const onChangeRequestedAmount = (e) => {
     // Convert to number
     const value = Number(e.target.value.replace(/,/g, ''))
     // Error Check
@@ -102,22 +116,70 @@ function Landingpage() {
     // If value = 0 removes 0 and disables continue button
     if (currencyValue <= 0 || !currencyValue) {
       setRequestedAmount('')
+      setInputError({ value: false })
       setContinueButtonState(true)
       return
     }
     // If pass value is set and continue button is enabled
     setRequestedAmount(currencyValue)
-    setContinueButtonState(false)
+
+    if (currencyValue.toString().length >= 4) {
+      setContinueButtonState(false)
+      setInputError({ value: false })
+    } else {
+      setContinueButtonState(true)
+      setInputError({ label: 'Four Digits Minimum', value: true })
+    }
+  }
+
+  const onChangeYear = (e) => {
+    // Convert to number
+    const value = Number(e.target.value)
+    // Error Check
+    if (isNaN(value)) {
+      return setYear((prev) => {
+        return prev
+      })
+    }
+    const valueLength = value.toString().length
+    // Error Check to see if year is between 1900 - current year
+    const yearCheck = value < 1900 || value > 2022
+    // If value is 0 clears field
+    if (value === 0) {
+      setInputError({ value: false })
+      setYear('')
+      return
+    }
+    // If date is less than 4 digits error message
+    valueLength < 4
+      ? setInputError({ label: 'Four Digits', value: true })
+      : setInputError({ value: false })
+
+    // Error Check set input error if year check is true
+    if (valueLength === 4 && yearCheck === true)
+      setInputError({ label: 'Enter Valid Year', value: true })
+
+    // Sets the Year
+    setYear(value)
+
+    // If month is filled and year has 4 values continue button enabled
+    if (month && yearCheck === false && valueLength === 4) {
+      setContinueButtonState(false)
+      setInputError({ value: false })
+    } else {
+      setContinueButtonState(true)
+    }
   }
 
   // Button to go back to previous question
   const prevQuestionButton = (
     <div
-      className='previous-question'
+      className='previous-question-container'
       type='button'
       onClick={() => {
         setCurrentQuestion(currentQuestion - 1)
-        setContinueButtonState(false)
+        // Error check on first question answer and back
+        if (currentQuestion !== 1) setContinueButtonState(false)
       }}
     >
       <FontAwesomeIcon
@@ -125,15 +187,15 @@ function Landingpage() {
         color='#1f4058'
         icon={faArrowLeft}
       />
-      <div>Previous</div>
+      Previous
     </div>
   )
 
   const continueButton = (
     <button
       onClick={() => {
-        setCurrentQuestion(currentQuestion + 1)
         setContinueButtonState(true)
+        setCurrentQuestion(currentQuestion + 1)
       }}
       className={`continue-button ${
         continueButtonState === true
@@ -141,7 +203,6 @@ function Landingpage() {
           : 'continue-button-enabled'
       }`}
       disabled={continueButtonState}
-      type='button'
     >
       CONTINUE
       <span>
@@ -153,13 +214,14 @@ function Landingpage() {
     </button>
   )
 
-  // Button to go back to previous question
-  const monthsCard = <div> Months Card</div>
+  const errorHandle = () => {
+    // console.log(test)
+  }
 
   const questions = [
     {
       header: (
-        <div className='header-title'>
+        <div className='header-title-container'>
           <h1>What type of business do you own?</h1>
           <p>
             Just answer a few questions to see your options. It’s free & won’t
@@ -183,7 +245,12 @@ function Landingpage() {
                     setCurrentQuestion(currentQuestion + 1)
                   }}
                 >
-                  <FontAwesomeIcon size='3x' color='#1f4058' icon={icon} />
+                  <FontAwesomeIcon
+                    size='2x'
+                    className='entity-icon'
+                    color='#1f4058'
+                    icon={icon}
+                  />
                   <div>{value}</div>
                 </button>
               </li>
@@ -194,61 +261,65 @@ function Landingpage() {
     },
     {
       header: (
-        <div className='header-title'>
+        <div className='header-title-container'>
           <h1>How much money do you need?</h1>
         </div>
       ),
       // Requested Amount Question
       question: (
-        <div>
-          <div className='input-container symbol' style={{ width: 300 }}>
-            <div className={requestedAmount && 'filled'}>$</div>
-            <input
-              type='text'
-              onKeyPress={(e) => {
-                if (e.key === 'Enter' && requestedAmount) {
-                  setCurrentQuestion(currentQuestion + 1)
-                  setContinueButtonState(true)
-                }
-              }}
-              value={requestedAmount}
-              onChange={currencyValueDisplay}
-            />
-            <label className={`symbol ${requestedAmount && 'filled'}`}>
-              Loan Amount
-            </label>
-          </div>
+        <div className='flex-column-center'>
+          <InputField
+            value={requestedAmount}
+            label={'Loan Amount'}
+            type={'tel'}
+            size={12}
+            enableIcon={true}
+            icon={faDollarSign}
+            onChange={onChangeRequestedAmount}
+            onKeyPress={onKeyPress}
+            enableError={inputError.value}
+            errorLabel={inputError.label}
+          />
           {continueButton}
         </div>
       ),
     },
     {
       header: (
-        <div className='header-title'>
+        <div className='header-title-container'>
           <h1>When did you start your business?</h1>
           <p>If you don't remember the month, take your best guess.</p>
         </div>
       ),
       // Month & Year Questions
       question: (
-        <div>
-          <div className='input-container' style={{ width: 170 }}>
-            <input
-              type='text'
-              // value={month}
-              onKeyPress={(e) => {
-                if (e.key === 'Enter' && month) {
-                  setCurrentQuestion(currentQuestion + 1)
-                }
-              }}
-              // onChange={currencyValueDisplay}
+        <div className='flex-column-center'>
+          <div className='flex-center'>
+            <InputField
+              value={month}
+              label={'Select Month'}
+              type={'text'}
+              size={12}
+              inputMode={'none'}
+              onChange={errorHandle}
               onClick={() => {
                 setMonthSelect(true)
               }}
             />
-            <label className={month && 'filled'}>Select Month</label>
+
+            <InputField
+              value={year}
+              label={'YYYY'}
+              type={'tel'}
+              maxLength={4}
+              size={7}
+              onChange={onChangeYear}
+              onKeyPress={onKeyPress}
+              enableError={inputError.value}
+              errorLabel={inputError.label}
+            />
           </div>
-          <div className='flex-box-wrapper' style={{ width: 300 }}>
+          <div className={!monthSelect ? 'display-none' : 'months-container'}>
             {months.map(({ value }, index) => (
               <ul key={index}>
                 <li>
@@ -258,8 +329,10 @@ function Landingpage() {
                     value={value.toLowerCase()}
                     onClick={(e) => {
                       e.preventDefault()
-                      // setEntityType(value.toLowerCase())
-                      // setCurrentQuestion(currentQuestion + 1)
+                      setMonth(value)
+                      setMonthSelect(false)
+                      if (year && inputError.value === false)
+                        setContinueButtonState(false)
                     }}
                   >
                     <div>{value}</div>
@@ -268,7 +341,6 @@ function Landingpage() {
               </ul>
             ))}
           </div>
-          {monthSelect && monthsCard}
           {continueButton}
         </div>
       ),
@@ -282,7 +354,7 @@ function Landingpage() {
           e.preventDefault()
         }}
       >
-        <div className='form-wrapper'>
+        <div className='form-container'>
           {currentQuestion > 0 ? prevQuestionButton : ''}
           {questions[currentQuestion].header}
           {questions[currentQuestion].question}
