@@ -9,30 +9,98 @@ import {
   faArrowLeft,
   faArrowRight,
   faDollarSign,
+  faPhone,
+  faEnvelope,
 } from '@fortawesome/free-solid-svg-icons'
 import './Styles.css'
-import InputField from './assets/InputField'
+import InputField from './InputField'
 
 function Landingpage() {
-  // eslint-disable-next-line
-  const [entityType, setEntityType] = useState('')
-  const [currentQuestion, setCurrentQuestion] = useState(0)
-  const [requestedAmount, setRequestedAmount] = useState('')
-  const [month, setMonth] = useState('')
-  const [year, setYear] = useState('')
-  const [continueButtonState, setContinueButtonState] = useState(true)
-  const [monthSelect, setMonthSelect] = useState(false)
-  const [inputError, setInputError] = useState({
-    label: '',
-    value: false,
-  })
+  const states = [
+    'Alabama',
+    'Alaska',
+    'Arizona',
+    'Arkansas',
+    'California',
+    'Colorado',
+    'Connecticut',
+    'Delaware',
+    'District of Columbia',
+    'Florida',
+    'Georgia',
+    'Hawaii',
+    'Idaho',
+    'Illinois',
+    'Indiana',
+    'Iowa',
+    'Kansas',
+    'Kentucky',
+    'Louisiana',
+    'Maine',
+    'Maryland',
+    'Massachusetts',
+    'Michigan',
+    'Minnesota',
+    'Mississippi',
+    'Missouri',
+    'Montana',
+    'Nebraska',
+    'Nevada',
+    'New Hampshire',
+    'New Jersey',
+    'New Mexico',
+    'New York',
+    'North Carolina',
+    'North Dakota',
+    'Ohio',
+    'Oklahoma',
+    'Oregon',
+    'Pennsylvania',
+    'Puerto Rico',
+    'Rhode Island',
+    'South Carolina',
+    'South Dakota',
+    'Tennessee',
+    'Texas',
+    'Utah',
+    'Vermont',
+    'Virgin Island',
+    'Virginia',
+    'Washington',
+    'West Virginia',
+    'Wisconsin',
+    'Wyoming',
+  ]
 
-  const onKeyPress = (e) => {
-    if (e.key === 'Enter' && continueButtonState === false) {
-      setCurrentQuestion(currentQuestion + 1)
-      setContinueButtonState(true)
-    }
-  }
+  // List of Months
+  const months = [
+    'January',
+    'February',
+    'March',
+    'April',
+    'May',
+    'June',
+    'July',
+    'August',
+    'September',
+    'October',
+    'November',
+    'December',
+  ]
+
+  // List of Months
+  const purposes = [
+    'Expansion',
+    'Working Capital',
+    'Payroll',
+    'Purchase a Business',
+    'Equipment',
+    'Real Estate',
+    'Buy Out a Partner',
+    'Start a Business',
+    'Fiance Accounts Receivables',
+    'Other',
+  ]
 
   // List of entity info
   const entityInfo = [
@@ -58,117 +126,293 @@ function Landingpage() {
     },
   ]
 
-  // List of Months
-  const months = [
-    {
-      value: 'January',
-    },
-    {
-      value: 'February',
-    },
-    {
-      value: 'March',
-    },
-    {
-      value: 'April',
-    },
-    {
-      value: 'May',
-    },
-    {
-      value: 'June',
-    },
-    {
-      value: 'July',
-    },
-    {
-      value: 'August',
-    },
-    {
-      value: 'September',
-    },
-    {
-      value: 'October',
-    },
-    {
-      value: 'November',
-    },
-    {
-      value: 'December',
-    },
-  ]
+  // eslint-disable-next-line
+  const [entityType, setEntityType] = useState('')
+  const [currentQuestion, setCurrentQuestion] = useState(0)
+  const [amount, setAmount] = useState({
+    errorEnabled: true,
+    errorLabel: '',
+    value: '',
+  })
+  const [month, setMonth] = useState({
+    errorEnabled: true,
+    errorLabel: '',
+    value: '',
+  })
+  const [year, setYear] = useState({
+    errorEnabled: true,
+    errorLabel: '',
+    value: '',
+  })
+  const [monthly, setMonthly] = useState({
+    errorEnabled: true,
+    errorLabel: '',
+    value: '',
+  })
+  const [firstName, setFirstName] = useState({
+    errorEnabled: true,
+    errorLabel: '',
+    value: '',
+  })
+  const [lastName, setLastName] = useState({
+    errorEnabled: true,
+    errorLabel: '',
+    value: '',
+  })
+  const [companyName, setCompanyName] = useState({
+    errorEnabled: true,
+    errorLabel: '',
+    value: '',
+  })
+  const [phone, setPhone] = useState({
+    errorEnabled: true,
+    errorLabel: '',
+    value: '',
+  })
+  const [email, setEmail] = useState({
+    errorEnabled: true,
+    errorLabel: '',
+    value: '',
+  })
+  const [purpose, setPurpose] = useState({
+    errorEnabled: true,
+    errorLabel: '',
+    value: [],
+  })
+  const [state, setState] = useState({
+    errorEnabled: true,
+    errorLabel: '',
+    value: '',
+  })
+  const [monthSelect, setMonthSelect] = useState(false)
+  const [stateSelect, setStateSelect] = useState(false)
+  const [stateSearch, setStateSearch] = useState(states)
 
-  // Sets Value for Currency
-  const onChangeRequestedAmount = (e) => {
-    // Convert to number
-    const value = Number(e.target.value.replace(/,/g, ''))
-    // Error Check
-    if (isNaN(value)) {
-      return setRequestedAmount((prev) => {
-        return prev
-      })
-    }
-    // Mask input with commas removed decimals
-    const currencyValue = (value / 1).toLocaleString('en-US', {
+  const onKeyPress = (e, errorEnabled) => {
+    const errorCheck = Array.isArray(errorEnabled)
+      ? !errorEnabled.includes(true)
+      : !errorEnabled
+
+    if (e.key === 'Enter') e.preventDefault()
+
+    if (e.key === 'Enter' && errorCheck) setCurrentQuestion(currentQuestion + 1)
+  }
+
+  const currencyValue = (value) => {
+    return value.toLocaleString('en-US', {
       minimumFractionDigits: 0,
       maximumFractionDigits: 0,
     })
-    // If value = 0 removes 0 and disables continue button
-    if (currencyValue <= 0 || !currencyValue) {
-      setRequestedAmount('')
-      setInputError({ value: false })
-      setContinueButtonState(true)
-      return
-    }
-    // If pass value is set and continue button is enabled
-    setRequestedAmount(currencyValue)
+  }
 
-    if (currencyValue.toString().length >= 4) {
-      setContinueButtonState(false)
-      setInputError({ value: false })
-    } else {
-      setContinueButtonState(true)
-      setInputError({ label: 'Four Digits Minimum', value: true })
-    }
+  // Sets Value for Currency
+  const onChangeAmount = (e) => {
+    const value = Number(e.target.value.replace(/,|\D/g, ''))
+
+    setAmount((prev) => {
+      let updatedState = Object.assign({}, prev)
+      updatedState.value =
+        value === 0
+          ? ((updatedState.value = ''), (updatedState.errorLabel = ''))
+          : currencyValue(value)
+
+      if (value.toString().length >= 4) {
+        updatedState.errorEnabled = false
+      } else {
+        updatedState.errorEnabled = true
+        updatedState.errorLabel = 'Four Digits Minimum'
+      }
+
+      return updatedState
+    })
+  }
+
+  const onClickMonth = (value) => {
+    setMonthSelect(false)
+    setMonth((prev) => {
+      let updatedState = Object.assign({}, prev)
+      updatedState.value = value
+      updatedState.errorEnabled = false
+
+      return updatedState
+    })
+  }
+
+  const onClickState = (e) => {
+    e.preventDefault()
+    setState((prev) => {
+      let updatedState = Object.assign({}, prev)
+      updatedState.value = e.target.value
+      updatedState.errorEnabled = false
+
+      return updatedState
+    })
   }
 
   const onChangeYear = (e) => {
-    // Convert to number
-    const value = Number(e.target.value)
-    // Error Check
-    if (isNaN(value)) {
-      return setYear((prev) => {
-        return prev
-      })
-    }
-    const valueLength = value.toString().length
-    // Error Check to see if year is between 1900 - current year
+    const value = Number(e.target.value.replace(/\D/g, ''))
     const yearCheck = value < 1900 || value > 2022
-    // If value is 0 clears field
-    if (value === 0) {
-      setInputError({ value: false })
-      setYear('')
-      return
-    }
-    // If date is less than 4 digits error message
-    valueLength < 4
-      ? setInputError({ label: 'Four Digits', value: true })
-      : setInputError({ value: false })
 
-    // Error Check set input error if year check is true
-    if (valueLength === 4 && yearCheck === true)
-      setInputError({ label: 'Enter Valid Year', value: true })
+    setYear((prev) => {
+      let updatedState = Object.assign({}, prev)
+      updatedState.value =
+        value === 0
+          ? ((updatedState.value = ''), (updatedState.errorLabel = ''))
+          : value
 
-    // Sets the Year
-    setYear(value)
+      if (value.toString().length >= 4 && !yearCheck) {
+        updatedState.errorEnabled = false
+      } else if (value.toString().length === 4 && yearCheck) {
+        updatedState.errorEnabled = true
+        updatedState.errorLabel = 'Enter Valid Year'
+      } else {
+        updatedState.errorEnabled = true
+        updatedState.errorLabel = 'Four Digits'
+      }
 
-    // If month is filled and year has 4 values continue button enabled
-    if (month && yearCheck === false && valueLength === 4) {
-      setContinueButtonState(false)
-      setInputError({ value: false })
-    } else {
-      setContinueButtonState(true)
-    }
+      return updatedState
+    })
+  }
+
+  const onChangeMonthly = (e) => {
+    const value = Number(e.target.value.replace(/,|\D/g, ''))
+
+    setMonthly((prev) => {
+      let updatedState = Object.assign({}, prev)
+      updatedState.value =
+        value === 0
+          ? ((updatedState.value = ''), (updatedState.errorLabel = ''))
+          : currencyValue(value)
+
+      if (value.toString().length >= 3) {
+        updatedState.errorEnabled = false
+      } else {
+        updatedState.errorEnabled = true
+        updatedState.errorLabel = 'Three Digits Minimum'
+      }
+      return updatedState
+    })
+  }
+
+  const onChangeState = (e) => {
+    const value = e.target.value
+    setState((prev) => {
+      let updatedState = Object.assign({}, prev)
+      updatedState.value = value
+      updatedState.errorEnabled = true
+
+      const newSearchArray = states.filter((x) =>
+        x.toLowerCase().includes(value.toLowerCase())
+      )
+      setStateSearch(newSearchArray)
+
+      return updatedState
+    })
+  }
+
+  const onChangeFirstName = (e) => {
+    setFirstName((prev) => {
+      let updatedState = Object.assign({}, prev)
+      updatedState.value = e.target.value.replace(/[0-9]/g, '')
+      updatedState.value
+        ? (updatedState.errorEnabled = false)
+        : (updatedState.errorEnabled = true)
+
+      return updatedState
+    })
+  }
+
+  const onChangeLastName = (e) => {
+    setLastName((prev) => {
+      let updatedState = Object.assign({}, prev)
+      updatedState.value = e.target.value.replace(/[0-9]/g, '')
+      updatedState.value
+        ? (updatedState.errorEnabled = false)
+        : (updatedState.errorEnabled = true)
+
+      return updatedState
+    })
+  }
+
+  const onChangeCompanyName = (e) => {
+    setCompanyName((prev) => {
+      let updatedState = Object.assign({}, prev)
+      updatedState.value = e.target.value
+      updatedState.value
+        ? (updatedState.errorEnabled = false)
+        : (updatedState.errorEnabled = true)
+
+      return updatedState
+    })
+  }
+  const onChangePhone = (e) => {
+    let x = e.target.value
+      .replace(/\D/g, '')
+      .match(/(\d{0,3})(\d{0,3})(\d{0,4})/)
+    const value = !x[2]
+      ? x[1]
+      : '(' + x[1] + ') ' + x[2] + (x[3] ? '-' + x[3] : '')
+
+    setPhone((prev) => {
+      let updatedState = Object.assign({}, prev)
+      updatedState.value =
+        value === 0
+          ? ((updatedState.value = ''), (updatedState.errorLabel = ''))
+          : value
+
+      if (value.toString().length >= 14) {
+        updatedState.errorEnabled = false
+      } else {
+        updatedState.errorEnabled = true
+        updatedState.errorLabel = 'Please enter a valid phone number'
+      }
+
+      return updatedState
+    })
+  }
+  const onChangeEmail = (e) => {
+    const value = e.target.value
+
+    setEmail((prev) => {
+      let updatedState = Object.assign({}, prev)
+      updatedState.value = value
+
+      var pattern = new RegExp(
+        /^(("[\w-\s]+")|([\w-]+(?:\.[\w-]+)*)|("[\w-\s]+")([\w-]+(?:\.[\w-]+)*))(@((?:[\w-]+\.)*\w[\w-]{0,66})\.([a-z]{2,6}(?:\.[a-z]{2})?)$)|(@\[?((25[0-5]\.|2[0-4][0-9]\.|1[0-9]{2}\.|[0-9]{1,2}\.))((25[0-5]|2[0-4][0-9]|1[0-9]{2}|[0-9]{1,2})\.){2}(25[0-5]|2[0-4][0-9]|1[0-9]{2}|[0-9]{1,2})\]?$)/i
+      )
+
+      if (pattern.test(value)) {
+        updatedState.errorEnabled = false
+      } else {
+        updatedState.errorEnabled = true
+        updatedState.errorLabel = 'Please enter a valid email address'
+      }
+
+      return updatedState
+    })
+  }
+
+  const onClickPurpose = (value) => {
+    setPurpose((prev) => {
+      let updatedState = Object.assign({}, prev)
+
+      updatedState.value.includes(value) === true
+        ? (updatedState.value = updatedState.value.filter(
+            (item) => item !== value
+          ))
+        : (updatedState.value = [...updatedState.value, value])
+
+      // Error check to see if value is filled if filled errorEnabled is set to false
+      !updatedState.value.length
+        ? (updatedState.errorEnabled = true)
+        : (updatedState.errorEnabled = false)
+
+      return updatedState
+    })
+  }
+
+  const errorHandle = () => {
+    // console.log(test)
   }
 
   // Button to go back to previous question
@@ -178,8 +422,6 @@ function Landingpage() {
       type='button'
       onClick={() => {
         setCurrentQuestion(currentQuestion - 1)
-        // Error check on first question answer and back
-        if (currentQuestion !== 1) setContinueButtonState(false)
       }}
     >
       <FontAwesomeIcon
@@ -191,44 +433,39 @@ function Landingpage() {
     </div>
   )
 
-  const continueButton = (
-    <button
-      onClick={() => {
-        setContinueButtonState(true)
-        setCurrentQuestion(currentQuestion + 1)
-      }}
-      className={`continue-button ${
-        continueButtonState === true
-          ? 'continue-button-disabled'
-          : 'continue-button-enabled'
-      }`}
-      disabled={continueButtonState}
-    >
-      CONTINUE
-      <span>
-        <FontAwesomeIcon
-          className={continueButtonState ? 'display-none' : 'continue-icon'}
-          icon={faArrowRight}
-        />
-      </span>
-    </button>
-  )
-
-  const errorHandle = () => {
-    // console.log(test)
+  const ContinueButton = ({ onClick, errorEnabled, type }) => {
+    const errorCheck = Array.isArray(errorEnabled)
+      ? !errorEnabled.every((value) => value === false)
+      : errorEnabled
+    return (
+      <button
+        type={type}
+        onClick={onClick}
+        className={`continue-button ${
+          errorCheck === true
+            ? 'continue-button-disabled'
+            : 'continue-button-enabled'
+        }`}
+        disabled={errorCheck}
+      >
+        CONTINUE
+        <span>
+          <FontAwesomeIcon
+            className={errorCheck ? 'display-none' : 'continue-icon'}
+            icon={faArrowRight}
+          />
+        </span>
+      </button>
+    )
   }
 
   const questions = [
     {
-      header: (
-        <div className='header-title-container'>
-          <h1>What type of business do you own?</h1>
-          <p>
-            Just answer a few questions to see your options. It’s free & won’t
-            impact your credit score.
-          </p>
-        </div>
-      ),
+      header: {
+        title: `What type of business do you own?`,
+        subTitle: `Just answer a few questions to see your options. It’s free & won’t
+        impact your credit score.`,
+      },
       // Company Type Question
       question: (
         <div className='flex-box-wrapper'>
@@ -237,7 +474,6 @@ function Landingpage() {
               <li>
                 <button
                   className='company-type-card'
-                  type='button'
                   value={value.toLowerCase()}
                   onClick={(e) => {
                     e.preventDefault()
@@ -260,79 +496,86 @@ function Landingpage() {
       ),
     },
     {
-      header: (
-        <div className='header-title-container'>
-          <h1>How much money do you need?</h1>
-        </div>
-      ),
+      header: {
+        title: `How much money do you need?`,
+      },
       // Requested Amount Question
       question: (
         <div className='flex-column-center'>
           <InputField
-            value={requestedAmount}
+            value={amount.value}
             label={'Loan Amount'}
             type={'tel'}
-            size={12}
-            enableIcon={true}
-            icon={faDollarSign}
-            onChange={onChangeRequestedAmount}
-            onKeyPress={onKeyPress}
-            enableError={inputError.value}
-            errorLabel={inputError.label}
+            size={20}
+            height='45px'
+            onChange={onChangeAmount}
+            onKeyPress={(e) => onKeyPress(e, amount.errorEnabled)}
+            errorEnabled={amount.errorEnabled}
+            errorLabel={amount.errorLabel}
           />
-          {continueButton}
+          <ContinueButton
+            onClick={() => setCurrentQuestion(currentQuestion + 1)}
+            errorEnabled={amount.errorEnabled}
+          />
         </div>
       ),
     },
     {
-      header: (
-        <div className='header-title-container'>
-          <h1>When did you start your business?</h1>
-          <p>If you don't remember the month, take your best guess.</p>
-        </div>
-      ),
+      header: {
+        title: `When did you start your business?`,
+        subTitle: `If you don't remember the month, take your best guess.`,
+      },
       // Month & Year Questions
       question: (
         <div className='flex-column-center'>
           <div className='flex-center'>
             <InputField
-              value={month}
+              value={month.value}
               label={'Select Month'}
               type={'text'}
               size={12}
+              height='45px'
               inputMode={'none'}
               onChange={errorHandle}
-              onClick={() => {
+              onFocus={() => {
                 setMonthSelect(true)
+              }}
+              onBlur={() =>
+                setTimeout(() => {
+                  setMonthSelect(false)
+                }, 300)
+              }
+              onKeyPress={(e) => {
+                e.preventDefault()
+                onKeyPress(e, [year.errorEnabled, month.errorEnabled])
               }}
             />
 
             <InputField
-              value={year}
+              value={year.value}
               label={'YYYY'}
               type={'tel'}
               maxLength={4}
               size={7}
+              height='45px'
+              errorEnabled={year.errorEnabled}
+              errorLabel={year.errorLabel}
               onChange={onChangeYear}
-              onKeyPress={onKeyPress}
-              enableError={inputError.value}
-              errorLabel={inputError.label}
+              onKeyPress={(e) => {
+                onKeyPress(e, [year.errorEnabled, month.errorEnabled])
+              }}
             />
           </div>
           <div className={!monthSelect ? 'display-none' : 'months-container'}>
-            {months.map(({ value }, index) => (
+            {months.map((value, index) => (
               <ul key={index}>
                 <li>
                   <button
                     className='months-card'
-                    type='button'
-                    value={value.toLowerCase()}
+                    value={value}
                     onClick={(e) => {
                       e.preventDefault()
-                      setMonth(value)
-                      setMonthSelect(false)
-                      if (year && inputError.value === false)
-                        setContinueButtonState(false)
+                      onClickMonth(value)
                     }}
                   >
                     <div>{value}</div>
@@ -341,7 +584,235 @@ function Landingpage() {
               </ul>
             ))}
           </div>
-          {continueButton}
+          <ContinueButton
+            onClick={() => setCurrentQuestion(currentQuestion + 1)}
+            errorEnabled={[year.errorEnabled, month.errorEnabled]}
+          />
+        </div>
+      ),
+    },
+    {
+      header: {
+        title: `What's your average monthly revenue over the last 3 months?`,
+      },
+      // Requested Amount Question
+      question: (
+        <div className='flex-column-center'>
+          <InputField
+            value={monthly.value}
+            label={'Average monthly revenue'}
+            type={'tel'}
+            size={25}
+            height='45px'
+            maxLength={11}
+            enableIcon={true}
+            icon={faDollarSign}
+            onChange={onChangeMonthly}
+            onKeyPress={(e) => onKeyPress(e, monthly.errorEnabled)}
+            errorEnabled={monthly.errorEnabled}
+            errorLabel={monthly.errorLabel}
+          />
+          <ContinueButton
+            onClick={() => setCurrentQuestion(currentQuestion + 1)}
+            errorEnabled={monthly.errorEnabled}
+          />
+        </div>
+      ),
+    },
+    {
+      header: {
+        title: `What are you getting financing for?`,
+        subTitle: `Select your loan purpose(s)`,
+      },
+      // Company Type Question
+      question: (
+        <div className='flex-column-center'>
+          <div className='flex-box-wrapper'>
+            {purposes.map((value, index) => (
+              <ul key={index}>
+                <li>
+                  <button
+                    className={
+                      purpose.value.includes(value) === true
+                        ? 'company-type-card company-type-card-active'
+                        : 'company-type-card'
+                    }
+                    value={value}
+                    onClick={(e) => {
+                      e.preventDefault()
+                      onClickPurpose(value)
+                    }}
+                  >
+                    <div>{value}</div>
+                  </button>
+                </li>
+              </ul>
+            ))}
+          </div>
+          <ContinueButton
+            onClick={() => setCurrentQuestion(currentQuestion + 1)}
+            errorEnabled={purpose.errorEnabled}
+          />
+        </div>
+      ),
+    },
+    {
+      header: {
+        title: `What's the name of your business?`,
+        subTitle: `This information will only be shared with our authorized lending
+        partners if you choose to view your lending options.`,
+      },
+      // Requested Amount Question
+      question: (
+        <div className='flex-column-center'>
+          <InputField
+            value={companyName.value}
+            label={'Business name'}
+            type={'text'}
+            height='45px'
+            size={30}
+            onChange={onChangeCompanyName}
+            onKeyPress={(e) => onKeyPress(e, [companyName.errorEnabled])}
+            errorEnabled={companyName.errorEnabled}
+            errorLabel={companyName.errorLabel}
+          />
+          <ContinueButton
+            onClick={() => setCurrentQuestion(currentQuestion + 1)}
+            errorEnabled={companyName.errorEnabled}
+          />
+        </div>
+      ),
+    },
+    {
+      header: {
+        title: `Which state is your business in?`,
+      },
+      // Requested Amount Question
+      question: (
+        <div className='flex-column-center'>
+          <InputField
+            value={state.value}
+            label={'Search and select a state'}
+            type={'text'}
+            height='45px'
+            size={30}
+            onChange={onChangeState}
+            onFocus={() => {
+              setStateSelect(true)
+            }}
+            onBlur={() =>
+              setTimeout(() => {
+                setStateSelect(false)
+              }, 300)
+            }
+            onKeyPress={(e) => onKeyPress(e, [state.errorEnabled])}
+            errorEnabled={state.errorEnabled}
+            errorLabel={state.errorLabel}
+            dropdownEnabled={stateSelect}
+            dropdownOptions={stateSearch}
+            onClickButton={onClickState}
+          />
+
+          <ContinueButton
+            onClick={() => setCurrentQuestion(currentQuestion + 1)}
+            errorEnabled={state.errorEnabled}
+          />
+        </div>
+      ),
+    },
+    {
+      header: {
+        title: `What's your name?`,
+      },
+      // Requested Amount Question
+      question: (
+        <div className='flex-column-center'>
+          <InputField
+            value={firstName.value}
+            label={'First Name'}
+            type={'text'}
+            height='45px'
+            size={30}
+            onChange={onChangeFirstName}
+            onKeyPress={(e) =>
+              onKeyPress(e, [firstName.errorEnabled, lastName.errorEnabled])
+            }
+            errorEnabled={firstName.errorEnabled}
+          />
+          <InputField
+            value={lastName.value}
+            label={'Last Name'}
+            type={'text'}
+            height='45px'
+            size={30}
+            onChange={onChangeLastName}
+            onKeyPress={(e) =>
+              onKeyPress(e, [firstName.errorEnabled, lastName.errorEnabled])
+            }
+            errorEnabled={lastName.errorEnabled}
+          />
+          <ContinueButton
+            onClick={() => setCurrentQuestion(currentQuestion + 1)}
+            errorEnabled={[firstName.errorEnabled, lastName.errorEnabled]}
+          />
+        </div>
+      ),
+    },
+    {
+      header: {
+        title: `Congratulations, you have funding partner matches!`,
+      },
+      // Requested Amount Question
+      question: (
+        <div className='flex-column-center'>
+          <ContinueButton
+            onClick={() => setCurrentQuestion(currentQuestion + 1)}
+          />
+        </div>
+      ),
+    },
+    {
+      header: {
+        title: `What's the best way to reach you?`,
+      },
+      // Requested Amount Question
+      question: (
+        <div className='flex-column-center'>
+          <InputField
+            value={phone.value}
+            label={'Your phone number'}
+            type={'tel'}
+            size={25}
+            height='45px'
+            maxLength={14}
+            enableIcon={true}
+            icon={faPhone}
+            onChange={onChangePhone}
+            onKeyPress={(e) =>
+              onKeyPress(e, [phone.errorEnabled, email.errorEnabled])
+            }
+            errorEnabled={phone.errorEnabled}
+            errorLabel={phone.errorLabel}
+          />
+          <InputField
+            value={email.value}
+            label={'Your Email'}
+            type={'email'}
+            height='45px'
+            size={25}
+            enableIcon={true}
+            icon={faEnvelope}
+            onChange={onChangeEmail}
+            onKeyPress={(e) =>
+              onKeyPress(e, [phone.errorEnabled, email.errorEnabled])
+            }
+            errorEnabled={email.errorEnabled}
+            errorLabel={email.errorLabel}
+          />
+          <ContinueButton
+            type={'submit'}
+            errorEnabled={[phone.errorEnabled, email.errorEnabled]}
+          />
         </div>
       ),
     },
@@ -352,11 +823,18 @@ function Landingpage() {
       <form
         onSubmit={(e) => {
           e.preventDefault()
+          console.log('submitted')
+          console.log([entityType, amount.value])
         }}
       >
         <div className='form-container'>
           {currentQuestion > 0 ? prevQuestionButton : ''}
-          {questions[currentQuestion].header}
+          <div className='header-title-container'>
+            <h1>{questions[currentQuestion].header.title}</h1>
+            {questions[currentQuestion].header.subTitle && (
+              <p>{questions[currentQuestion].header.subTitle}</p>
+            )}
+          </div>
           {questions[currentQuestion].question}
         </div>
       </form>
