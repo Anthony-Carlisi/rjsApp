@@ -15,7 +15,7 @@ import {
   validEmail,
   findObject,
 } from './utils/Validations'
-
+import AutoComplete from './AutoComplete'
 import Sandbox from './Sandbox'
 import {
   faBriefcase,
@@ -167,6 +167,8 @@ function Form() {
     monthly: '',
     loanPurposes: [],
     companyName: '',
+    state: '',
+    stateSuggestion: states,
   })
   const [formErrors, setFormErrors] = useState({
     loanAmount: '',
@@ -176,6 +178,7 @@ function Form() {
     monthly: '',
     loanPurposes: '',
     companyName: '',
+    state: '',
   })
 
   const handleChange = (e) => {
@@ -191,6 +194,9 @@ function Form() {
               [name]: `3 Characters minimum`,
             })
           : delete formErrors[name]
+        break
+      case 'state':
+        setForm({ ...form, state: value })
         break
 
       case 'companyType':
@@ -329,7 +335,7 @@ function Form() {
         <PrevQuestion />
         <h1>How much money do you need?</h1>
         <Center>
-          <Sandbox
+          <InputField
             value={currencyValue(Number(form.loanAmount))}
             label={'Loan Amount'}
             type={'tel'}
@@ -500,16 +506,17 @@ function Form() {
         <PrevQuestion />
         <h1>Which state is your business in?</h1>
         <Center>
-          <InputField
-            value={form.companyName}
+          <Sandbox
+            value={form.state}
             label={'Search and select a state'}
             size={30}
             name='state'
             onChange={handleChange}
             errorLabel={formErrors.state}
-            options={states}
           />
         </Center>
+        <AutoComplete input={form.state} options={states} />
+
         <Center>
           <Button
             // onClick={onClick}

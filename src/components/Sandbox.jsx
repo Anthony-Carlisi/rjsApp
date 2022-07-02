@@ -27,60 +27,30 @@ function Sandbox({
   onFocus,
   onBlur,
   name,
-  options,
-  onClickOptions,
 }) {
-  const [inputValue, setInputValue] = useState(value)
-  const [input, setInput] = useState(value)
-  const options1 = [
-    1,
-    2,
-    '3',
-    'April',
-    'May',
-    'June',
-    'July',
-    'August',
-    'September',
-    'October',
-    'November',
-    'December',
-  ]
-
-  const handleClick = (e) => {
-    e.preventDefault()
-    setInputValue(e.target.value)
-    console.log(e.target)
-    value = '100'
-  }
-
-  // value = '50'
   return (
-    <div>
-      <Container>
-        <Border>
-          <Icon id='icon' icon={faDollarSign} />
-          <InputContainer>
-            <Label>label</Label>
-            <Input
-              size={size}
-              onFocus={onFocus}
-              onBlur={onBlur}
-              type={'select'}
-              maxLength={maxLength}
-              value={value}
-              onChange={onChange}
-              onKeyPress={onKeyPress}
-              onClick={onClick}
-              inputMode={inputMode}
-              name={name}
-            />
-            {/* <option>test</option>
-            <option>test</option>
-            <option>test</option> */}
-          </InputContainer>
-        </Border>
-        {options1 && (
+    <Container>
+      <Border>
+        {icon && <Icon icon={icon} />}
+        <InputContainer>
+          <Label>{label}</Label>
+          <Input
+            size={size}
+            onFocus={onFocus}
+            onBlur={onBlur}
+            type={type}
+            maxLength={maxLength}
+            value={value}
+            onChange={onChange}
+            onKeyPress={onKeyPress}
+            onClick={onClick}
+            inputMode={inputMode}
+            name={name}
+          />
+        </InputContainer>
+      </Border>
+      {errorLabel && <ErrorLabel>{errorLabel}</ErrorLabel>}
+      {/* {options1 && (
           <Dropdown width={size}>
             {options1.map((value, index) => (
               <ul key={index}>
@@ -92,10 +62,8 @@ function Sandbox({
               </ul>
             ))}
           </Dropdown>
-        )}
-      </Container>
-      <ErrorLabel>test</ErrorLabel>
-    </div>
+        )} */}
+    </Container>
   )
 }
 

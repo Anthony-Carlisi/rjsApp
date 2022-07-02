@@ -38,6 +38,7 @@ export const Icon = styled(FontAwesomeIcon)`
 
 export const ErrorLabel = styled.p`
   position: absolute;
+  bottom: -16px;
   color: red;
 `
 
