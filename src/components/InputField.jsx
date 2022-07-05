@@ -1,9 +1,11 @@
 import {
-  Input,
   Container,
-  Icon,
   Label,
+  Input,
+  Icon,
+  InputContainer,
   ErrorLabel,
+  Border,
 } from './styles/InputField.styled'
 
 function InputField({
@@ -24,26 +26,26 @@ function InputField({
 }) {
   return (
     <Container>
-      {icon && <Icon id='icon' filled={value} icon={icon} />}
-      <Input
-        size={size}
-        icon={icon}
-        errorLabel={errorLabel}
-        onFocus={onFocus}
-        onBlur={onBlur}
-        type={type}
-        maxLength={maxLength}
-        value={value}
-        onChange={onChange}
-        onKeyPress={onKeyPress}
-        onClick={onClick}
-        inputMode={inputMode}
-        name={name}
-      />
-      <Label icon={icon} filled={value}>
-        {label}
-      </Label>
-      {errorLabel && value && <ErrorLabel>{errorLabel}</ErrorLabel>}
+      <Border>
+        {icon && <Icon filled={value} icon={icon} />}
+        <InputContainer>
+          <Label filled={value}>{label}</Label>
+          <Input
+            size={size}
+            onFocus={onFocus}
+            onBlur={onBlur}
+            type={type}
+            maxLength={maxLength}
+            value={value}
+            onChange={onChange}
+            onKeyPress={onKeyPress}
+            onClick={onClick}
+            inputMode={inputMode}
+            name={name}
+          />
+        </InputContainer>
+      </Border>
+      {errorLabel && <ErrorLabel>{errorLabel}</ErrorLabel>}
     </Container>
   )
 }

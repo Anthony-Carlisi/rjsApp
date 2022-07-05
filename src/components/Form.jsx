@@ -5,18 +5,16 @@ import {
   PrevButton,
   FormContainer,
   Button,
-  DropDownRow,
 } from './styles/Form.styled'
 import InputField from './InputField'
 import CardSelect from './CardSelect'
+import AutoComplete from './AutoComplete'
 import {
   minMaxLength,
   currencyValue,
   validEmail,
   findObject,
 } from './utils/Validations'
-import AutoComplete from './AutoComplete'
-import Sandbox from './Sandbox'
 import {
   faBriefcase,
   faShop,
@@ -363,49 +361,31 @@ function Form() {
         <h1>When did you start your business?</h1>
         <p id='sub'>If you don't remember the month, take your best guess</p>
         <Center>
-          <InputField
-            value={form.month}
-            label={'Select Month'}
-            type={'text'}
-            size={12}
-            name={'monthSelect'}
-            inputMode={'none'}
-            onFocus={handleChange}
-            onBlur={handleChange}
-            errorLabel={formErrors.month}
-          />
+          <Center>
+            <InputField
+              value={form.month}
+              label={'Select Month'}
+              type={'text'}
+              size={12}
+              name={'month'}
+              onChange={handleChange}
+              errorLabel={formErrors.month}
+            />
+          </Center>
+          <Center>
+            <InputField
+              value={form.year}
+              label={'YYYY'}
+              type={'tel'}
+              name={'year'}
+              maxLength={4}
+              size={7}
+              errorLabel={formErrors.year}
+              onChange={handleChange}
+            />
+          </Center>
+        </Center>
 
-          <InputField
-            value={form.year}
-            label={'YYYY'}
-            type={'tel'}
-            name={'year'}
-            maxLength={4}
-            size={7}
-            errorLabel={formErrors.year}
-            onChange={handleChange}
-          />
-        </Center>
-        <Center>
-          {formErrors.monthSelect && (
-            <DropDownRow>
-              {months.map((value, index) => (
-                <ul key={index}>
-                  <li>
-                    <button
-                      className='months-card'
-                      value={value}
-                      name={'month'}
-                      onClick={handleChange}
-                    >
-                      <div>{value}</div>
-                    </button>
-                  </li>
-                </ul>
-              ))}
-            </DropDownRow>
-          )}
-        </Center>
         <Center>
           <Button
             onClick={handleChange}
@@ -428,7 +408,7 @@ function Form() {
             value={currencyValue(Number(form.monthly))}
             label={'Average monthly revenue'}
             type={'tel'}
-            size={20}
+            size={25}
             name='monthly'
             icon={faDollarSign}
             onChange={handleChange}
@@ -506,7 +486,7 @@ function Form() {
         <PrevQuestion />
         <h1>Which state is your business in?</h1>
         <Center>
-          <Sandbox
+          <InputField
             value={form.state}
             label={'Search and select a state'}
             size={30}
@@ -515,7 +495,6 @@ function Form() {
             errorLabel={formErrors.state}
           />
         </Center>
-        <AutoComplete input={form.state} options={states} />
 
         <Center>
           <Button
@@ -529,6 +508,8 @@ function Form() {
           </Button>
         </Center>
       </Slide>
+
+      <AutoComplete options={months} input={form.month} activeSuggestion={0} />
 
       <div className='mb-3'>
         <button type='submit'>Create Account</button>

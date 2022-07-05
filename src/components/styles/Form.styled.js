@@ -8,17 +8,20 @@ export const Slide = styled.div`
   h1 {
     text-align: center;
     color: #265373;
+    margin: 10px 20px;
   }
 
   #sub {
     text-align: center;
     color: #46494b;
+    margin: 10px 20px;
   }
 `
 export const Center = styled.div`
   display: flex;
   justify-content: center;
   position: relative;
+  margin: 10px 20px;
 `
 export const PrevButton = styled.div`
   cursor: pointer;
@@ -80,7 +83,7 @@ export const Button = styled.button`
   transform: scale(1.1);
   transition-duration: 0.2s;
   font-size: 24px;
-  margin-top: 5px;
+  margin: 10px 20px;
   padding: 10px;
   border: none;
   border-radius: 10px;

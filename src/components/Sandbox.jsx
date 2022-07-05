@@ -1,70 +1,27 @@
-import {
-  Container,
-  Label,
-  Input,
-  Icon,
-  InputContainer,
-  ErrorLabel,
-  Dropdown,
-  Border,
-} from './styles/Sandbox.styled'
+import { Container, Label, Input, Icon } from './styles/Sandbox.styled'
 import { faDollarSign } from '@fortawesome/free-solid-svg-icons'
 
-import { useState } from 'react'
-
-function Sandbox({
-  onChange,
-  value,
-  label,
-  onKeyPress,
-  errorLabel,
-  type,
-  maxLength,
-  size,
-  icon,
-  onClick,
-  inputMode,
-  onFocus,
-  onBlur,
-  name,
-}) {
+function InputField({ onChange, value, label, name, size, icon }) {
+  label = 'test'
+  size = 15
+  // value = 2500
+  icon = faDollarSign
   return (
     <Container>
-      <Border>
-        {icon && <Icon icon={icon} />}
-        <InputContainer>
-          <Label>{label}</Label>
-          <Input
-            size={size}
-            onFocus={onFocus}
-            onBlur={onBlur}
-            type={type}
-            maxLength={maxLength}
-            value={value}
-            onChange={onChange}
-            onKeyPress={onKeyPress}
-            onClick={onClick}
-            inputMode={inputMode}
-            name={name}
-          />
-        </InputContainer>
-      </Border>
-      {errorLabel && <ErrorLabel>{errorLabel}</ErrorLabel>}
-      {/* {options1 && (
-          <Dropdown width={size}>
-            {options1.map((value, index) => (
-              <ul key={index}>
-                <li>
-                  <button value={value} onClick={handleClick}>
-                    {value}
-                  </button>
-                </li>
-              </ul>
-            ))}
-          </Dropdown>
-        )} */}
+      <Label filled={value} htmlFor={name}>
+        Amount requested
+      </Label>
+      {/* <Icon icon={icon} /> */}
+      <Input
+        size={size}
+        value={value}
+        onChange={onChange}
+        type='text'
+        name={name}
+        placeholder={'25,000'}
+      />
     </Container>
   )
 }
 
-export default Sandbox
+export default InputField

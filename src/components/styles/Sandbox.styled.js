@@ -5,66 +5,56 @@ export const Container = styled.div`
   display: flex;
   position: relative;
   width: min-content;
+  border: 1px solid red;
+  margin: 10px;
+  border-radius: 4px;
+
+  :focus-within {
+    label {
+      background-color: white;
+      padding: 0 5px;
+      transform: translateY(-60%) translateX(-5%) scale(0.8);
+      height: 5px;
+    }
+
+    input::placeholder {
+      color: #cbd5e0;
+    }
+  }
 `
 
-export const Border = styled.div`
-  display: flex;
-  position: relative;
-  width: min-content;
-  border-radius: 4px;
-  border: red 1px solid;
-  overflow: hidden;
-`
-export const InputContainer = styled.div`
-  display: flex;
-`
 export const Label = styled.label`
-  position: absolute;
   display: flex;
-  align-self: center;
-  top: 0;
+  position: absolute;
+  padding: 0 10px;
+  align-items: center;
+  height: 100%;
+  font-size: 18px;
   pointer-events: none;
+  transition: all 0.2s ease;
+  ${({ filled }) => {
+    if (filled) {
+      return `
+      transform: translateY(-60%) translateX(-5%) scale(0.8); 
+      background-color: white;
+      padding: 0 5px;
+      height: 5px
+      `
+    }
+  }};
 `
 export const Input = styled.input`
-  padding-top: 10%;
-`
+  padding: 10px;
+  background: none;
+  font-size: 16px;
 
+  ::placeholder {
+    color: transparent;
+    transition: color 0.4s ease;
+  }
+`
 export const Icon = styled(FontAwesomeIcon)`
-  padding: 8px;
-
-  background: ${({ filled }) => (filled ? '#484eea' : '#dee3e7')};
-  color: ${({ filled }) => (filled ? '#fff' : '#1f4058')};
-`
-
-export const ErrorLabel = styled.p`
-  position: absolute;
-  bottom: -16px;
   color: red;
-`
-
-export const Dropdown = styled.div`
-  position: absolute;
-  /* top: 0; */
-  margin-top: 3.4rem;
-  width: 100%;
-  background-color: #fff;
-  /* height: auto; */
-  border-radius: 4px;
-  box-shadow: rgba(0, 0, 0, 0.1) 0px 0px 5px 0px,
-    rgba(0, 0, 0, 0.1) 0px 0px 1px 0px;
-  overflow: auto;
-  z-index: 10;
-
-  button {
-    padding: 10px 20px;
-    text-align: start;
-    font-size: 16px;
-    background: none;
-    border: none;
-    width: 100% !important;
-  }
-
-  button:hover {
-    background-color: #cecdcd;
-  }
+  align-self: center;
+  padding: 5px;
 `

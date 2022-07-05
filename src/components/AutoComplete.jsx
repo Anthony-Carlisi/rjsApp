@@ -1,19 +1,22 @@
-function AutoComplete({ options, input, onClick }) {
+import { Container, List } from './styles/AutoComplete.styled'
+import InputField from './InputField'
+function AutoComplete({ options, input, activeSuggestion }) {
   const filteredOptions = options.filter(
     (suggestion) => suggestion.toLowerCase().indexOf(input.toLowerCase()) > -1
   )
   return (
-    <ul>
-      <li>
-        {filteredOptions.map((value, index) => (
-          <ul key={index}>
-            <li value={value} onClick={onClick}>
-              {value}
-            </li>
-          </ul>
-        ))}
-      </li>
-    </ul>
+    <Container>
+      {filteredOptions.map((value, index) => (
+        <List
+          key={index}
+          suggestion={activeSuggestion === index}
+          value={value}
+          // onClick={onClick}
+        >
+          {value}
+        </List>
+      ))}
+    </Container>
   )
 }
 
