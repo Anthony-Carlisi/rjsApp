@@ -1,25 +1,37 @@
-import { Container, Label, Input, Icon } from './styles/Sandbox.styled'
+import { Container, Label, Input, Wrapper } from './styles/Sandbox.styled'
 import { faDollarSign } from '@fortawesome/free-solid-svg-icons'
 
-function InputField({ onChange, value, label, name, size, icon }) {
-  label = 'test'
+function InputField({
+  onClick,
+  onChange,
+  value,
+  label,
+  name,
+  size,
+  icon,
+  placeholder,
+  type,
+}) {
+  label = 'Amount Requested'
   size = 15
   // value = 2500
+  placeholder = 'placeholder'
   icon = faDollarSign
   return (
     <Container>
-      <Label filled={value} htmlFor={name}>
-        Amount requested
-      </Label>
-      {/* <Icon icon={icon} /> */}
-      <Input
-        size={size}
-        value={value}
-        onChange={onChange}
-        type='text'
-        name={name}
-        placeholder={'25,000'}
-      />
+      <Wrapper>
+        <span>test</span>
+        <Input
+          onClick={onClick}
+          onChange={onChange}
+          value={value}
+          type={type}
+          placeholder={placeholder}
+          name={name}
+          size={size}
+        />
+        <Label>{label}</Label>
+      </Wrapper>
     </Container>
   )
 }

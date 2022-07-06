@@ -2,59 +2,59 @@ import styled from 'styled-components'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 
 export const Container = styled.div`
+  height: 100%;
   display: flex;
-  position: relative;
-  width: min-content;
-  border: 1px solid red;
-  margin: 10px;
-  border-radius: 4px;
-
-  :focus-within {
-    label {
-      background-color: white;
-      padding: 0 5px;
-      transform: translateY(-60%) translateX(-5%) scale(0.8);
-      height: 5px;
-    }
-
-    input::placeholder {
-      color: #cbd5e0;
-    }
-  }
+  justify-content: center;
+  align-items: center;
 `
 
-export const Label = styled.label`
-  display: flex;
-  position: absolute;
-  padding: 0 10px;
-  align-items: center;
-  height: 100%;
-  font-size: 18px;
-  pointer-events: none;
-  transition: all 0.2s ease;
-  ${({ filled }) => {
-    if (filled) {
-      return `
-      transform: translateY(-60%) translateX(-5%) scale(0.8); 
-      background-color: white;
-      padding: 0 5px;
-      height: 5px
-      `
-    }
-  }};
+export const Wrapper = styled.div`
+  position: relative;
+  /* border: 1px solid gray; */
 `
 export const Input = styled.input`
-  padding: 10px;
-  background: none;
-  font-size: 16px;
+  font-size: 1rem;
+  outline: none;
+  border: 1px solid gray;
+  border-radius: 5px;
+  padding: 1rem 0.7rem;
+  color: gray;
+  transition: 0.1s ease-out;
 
-  ::placeholder {
-    color: transparent;
-    transition: color 0.4s ease;
+  :focus {
+    border-color: #6200ee;
+  }
+
+  :focus + label {
+    color: #6200ee;
+    top: 0;
+    transform: translateY(-50%) scale(0.9) !important;
+  }
+
+  :not(:placeholder-shown) + label {
+    top: 0;
+    transform: translateY(-50%) scale(0.9) !important;
+  }
+
+  /* :not(:placeholder-shown) {
+    border-color: #6200ee;
+  } */
+
+  :not(:focus)::placeholder {
+    opacity: 0;
   }
 `
-export const Icon = styled(FontAwesomeIcon)`
-  color: red;
-  align-self: center;
-  padding: 5px;
+export const Label = styled.label`
+  position: absolute;
+  font-size: 1rem;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  background-color: white;
+  color: gray;
+  padding: 0 0.3rem;
+  margin: 0 0.5rem;
+  transition: 0.1s ease-out;
+  transform-origin: left top;
+  pointer-events: none;
 `
