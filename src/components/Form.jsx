@@ -6,21 +6,16 @@ import {
   FormContainer,
   Button,
 } from './styles/Form.styled'
-import InputField from './InputField'
-import CardSelect from './CardSelect'
-import AutoComplete from './AutoComplete'
 import {
   minMaxLength,
   currencyValue,
   validEmail,
   findObject,
+  findInArray,
 } from './utils/Validations'
+
+import { months, purposes, entityInfo, states } from './utils/StaticData'
 import {
-  faBriefcase,
-  faShop,
-  faBuilding,
-  faHandshake,
-  faUserTie,
   faArrowLeft,
   faArrowRight,
   faDollarSign,
@@ -28,135 +23,11 @@ import {
   // faEnvelope,
 } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import InputField from './InputField'
+import CardSelect from './CardSelect'
+import Sandbox from './Sandbox'
 
 function Form() {
-  const states = [
-    'Alabama',
-    'Alaska',
-    'Arizona',
-    'Arkansas',
-    'California',
-    'Colorado',
-    'Connecticut',
-    'Delaware',
-    'District of Columbia',
-    'Florida',
-    'Georgia',
-    'Hawaii',
-    'Idaho',
-    'Illinois',
-    'Indiana',
-    'Iowa',
-    'Kansas',
-    'Kentucky',
-    'Louisiana',
-    'Maine',
-    'Maryland',
-    'Massachusetts',
-    'Michigan',
-    'Minnesota',
-    'Mississippi',
-    'Missouri',
-    'Montana',
-    'Nebraska',
-    'Nevada',
-    'New Hampshire',
-    'New Jersey',
-    'New Mexico',
-    'New York',
-    'North Carolina',
-    'North Dakota',
-    'Ohio',
-    'Oklahoma',
-    'Oregon',
-    'Pennsylvania',
-    'Puerto Rico',
-    'Rhode Island',
-    'South Carolina',
-    'South Dakota',
-    'Tennessee',
-    'Texas',
-    'Utah',
-    'Vermont',
-    'Virgin Island',
-    'Virginia',
-    'Washington',
-    'West Virginia',
-    'Wisconsin',
-    'Wyoming',
-  ]
-  // List of entity info
-  const entityInfo = [
-    {
-      value: 'Limited Liability Company',
-      icon: faBriefcase,
-    },
-    {
-      value: 'S Corporation',
-      icon: faShop,
-    },
-    {
-      value: 'C Corporation',
-      icon: faBuilding,
-    },
-    {
-      value: 'Partnership',
-      icon: faHandshake,
-    },
-    {
-      value: 'Sole Proprietor',
-      icon: faUserTie,
-    },
-  ]
-
-  // List of Months
-  const months = [
-    'January',
-    'February',
-    'March',
-    'April',
-    'May',
-    'June',
-    'July',
-    'August',
-    'September',
-    'October',
-    'November',
-    'December',
-  ]
-  // List of Months
-  const purposes = [
-    {
-      value: 'Expansion',
-    },
-    {
-      value: 'Working Capital',
-    },
-    {
-      value: 'Payroll',
-    },
-    {
-      value: 'Purchase a Business',
-    },
-    {
-      value: 'Equipment',
-    },
-    {
-      value: 'Real Estate',
-    },
-    {
-      value: 'Buy Out a Partner',
-    },
-    {
-      value: 'Start a Business',
-    },
-    {
-      value: 'Fiance Accounts Receivables',
-    },
-    {
-      value: 'Other',
-    },
-  ]
   const [form, setForm] = useState({
     companyType: '',
     loanAmount: '',
@@ -166,7 +37,6 @@ function Form() {
     loanPurposes: [],
     companyName: '',
     state: '',
-    stateSuggestion: states,
   })
   const [formErrors, setFormErrors] = useState({
     loanAmount: '',
@@ -178,14 +48,17 @@ function Form() {
     companyName: '',
     state: '',
   })
+  const [autoComplete, setAutoComplete] = useState({
+    filteredSuggestions: [],
+    activeSuggestionIndex: 0,
+  })
 
   const handleChange = (e) => {
     const { name, value } = e.target
     let Value
     switch (name) {
       case 'companyName':
-        setForm({ ...form, companyName: value })
-
+        setForm({ ...form, name: value })
         minMaxLength(value, 3)
           ? setFormErrors({
               ...formErrors,
@@ -193,8 +66,31 @@ function Form() {
             })
           : delete formErrors[name]
         break
+
       case 'state':
-        setForm({ ...form, state: value })
+        setForm({ ...form, [name]: value })
+        // Filter our suggestions that don't contain the user's input
+        const unLinked = states.filter(
+          (state) => state.toLowerCase().indexOf(value.toLowerCase()) > -1
+        )
+        setAutoComplete({
+          ...autoComplete,
+          activeSuggestionIndex: 0,
+          filteredSuggestions: unLinked,
+        })
+        break
+
+      case 'month':
+        setForm({ ...form, [name]: value })
+        // Filter our suggestions that don't contain the user's input
+        const unLinked2 = months.filter(
+          (state) => state.toLowerCase().indexOf(value.toLowerCase()) > -1
+        )
+        setAutoComplete({
+          ...autoComplete,
+          activeSuggestionIndex: 0,
+          filteredSuggestions: unLinked2,
+        })
         break
 
       case 'companyType':
@@ -222,26 +118,6 @@ function Form() {
         }
         break
 
-      case 'month':
-        e.preventDefault()
-        setForm({ ...form, month: value })
-        delete formErrors[name]
-        break
-
-      case 'monthSelect':
-        e.type === 'blur'
-          ? setTimeout(() => {
-              setFormErrors({
-                ...formErrors,
-                monthSelect: false,
-              })
-            }, 300)
-          : setFormErrors({
-              ...formErrors,
-              monthSelect: true,
-            })
-        break
-
       case 'email':
         setForm({ ...form, email: value })
 
@@ -253,22 +129,11 @@ function Form() {
           : delete formErrors[name]
         break
 
+      case 'monthly':
       case 'loanAmount':
         Value = value.replace(/\D/g, '')
-        setForm({ ...form, loanAmount: Value })
-
-        minMaxLength(Value, 4)
-          ? setFormErrors({
-              ...formErrors,
-              [name]: `4 digits minimum`,
-            })
-          : delete formErrors[name]
-        break
-
-      case 'monthly':
-        Value = value.replace(/\D/g, '')
-        setForm({ ...form, monthly: Value })
-
+        console.log(name)
+        setForm({ ...form, [name]: Value })
         minMaxLength(Value, 4)
           ? setFormErrors({
               ...formErrors,
@@ -280,7 +145,6 @@ function Form() {
       case 'year':
         setForm({ ...form, year: value.replace(/\D/g, '') })
         const yearCheck = value < 1900 || value > 2022
-
         if (minMaxLength(value, 4)) {
           setFormErrors({
             ...formErrors,
@@ -313,6 +177,79 @@ function Form() {
     </PrevButton>
   )
 
+  const ContinueButton = ({ fieldCheck }) => {
+    return (
+      <Button
+        onClick={handleChange}
+        disabled={findObject(formErrors, fieldCheck)}
+      >
+        CONTINUE
+        {!findObject(formErrors, fieldCheck) && (
+          <FontAwesomeIcon id={'icon'} icon={faArrowRight} />
+        )}
+      </Button>
+    )
+  }
+
+  const handleClick = (e) => {
+    const name = e.target.getAttribute('name')
+    switch (name) {
+      case 'state':
+      case 'month':
+        console.log(name)
+
+        setForm({ ...form, [name]: e.target.getAttribute('value') })
+        break
+
+      default:
+        break
+    }
+    // console.log(e.target.getAttribute('value'))
+    // setForm({ ...form, state: e.target.getAttribute('value') })
+  }
+
+  const handleKeyDown = (e) => {
+    const { name } = e.target
+    switch (e.key) {
+      case 'ArrowUp':
+        e.preventDefault()
+        if (autoComplete.activeSuggestionIndex === 0) return
+        setAutoComplete({
+          ...autoComplete,
+          activeSuggestionIndex: autoComplete.activeSuggestionIndex - 1,
+        })
+        break
+      case 'ArrowDown':
+        e.preventDefault()
+        if (
+          autoComplete.activeSuggestionIndex ===
+          autoComplete.filteredSuggestions.length - 1
+        )
+          return
+
+        setAutoComplete({
+          ...autoComplete,
+          activeSuggestionIndex: autoComplete.activeSuggestionIndex + 1,
+        })
+
+        break
+      case 'Tab':
+      case 'Enter':
+        e.preventDefault()
+        setForm({
+          ...form,
+          [name]:
+            autoComplete.filteredSuggestions[
+              autoComplete.activeSuggestionIndex
+            ],
+        })
+
+        break
+      default:
+        break
+    }
+  }
+
   return (
     <FormContainer>
       <Slide>
@@ -337,22 +274,16 @@ function Form() {
             value={currencyValue(Number(form.loanAmount))}
             label={'Loan Amount'}
             type={'tel'}
-            size={20}
+            size={8}
             name='loanAmount'
             onChange={handleChange}
-            errorLabel={formErrors.loanAmount}
+            error={formErrors.loanAmount}
+            placeholder={'50,000'}
+            LeadingIcon={faDollarSign}
           />
         </Center>
         <Center>
-          <Button
-            // onClick={onClick}
-            disabled={formErrors.hasOwnProperty('loanAmount')}
-          >
-            CONTINUE
-            {!formErrors.hasOwnProperty('loanAmount') && (
-              <FontAwesomeIcon id={'icon'} icon={faArrowRight} />
-            )}
-          </Button>
+          <ContinueButton fieldCheck={['loanAmount']} />
         </Center>
       </Slide>
 
@@ -361,42 +292,44 @@ function Form() {
         <h1>When did you start your business?</h1>
         <p id='sub'>If you don't remember the month, take your best guess</p>
         <Center>
-          <Center>
-            <InputField
-              value={form.month}
-              label={'Select Month'}
-              type={'text'}
-              size={12}
-              name={'month'}
-              onChange={handleChange}
-              errorLabel={formErrors.month}
-            />
-          </Center>
-          <Center>
-            <InputField
-              value={form.year}
-              label={'YYYY'}
-              type={'tel'}
-              name={'year'}
-              maxLength={4}
-              size={7}
-              errorLabel={formErrors.year}
-              onChange={handleChange}
-            />
-          </Center>
-        </Center>
-
-        <Center>
-          <Button
-            onClick={handleChange}
-            disabled={findObject(formErrors, ['year', 'month'])}
+          {/* <InputField
+            value={form.month}
+            label={'Select Month'}
+            type={'text'}
+            size={12}
             name={'month'}
-          >
-            CONTINUE
-            {!findObject(formErrors, ['year', 'month']) && (
-              <FontAwesomeIcon id={'icon'} icon={faArrowRight} />
-            )}
-          </Button>
+            onChange={handleChange}
+            error={formErrors.month}
+            placeholder={'January'}
+          /> */}
+          <Sandbox
+            value={form.month}
+            label={'Select Month'}
+            size={12}
+            name={'month'}
+            onChange={handleChange}
+            error={formErrors.month}
+            placeholder={'January'}
+            autoComplete={'off'}
+            filteredSuggestions={autoComplete.filteredSuggestions}
+            DropdownClick={handleClick}
+            onKeyDown={handleKeyDown}
+            activeSuggestionIndex={autoComplete.activeSuggestionIndex}
+          />
+          <InputField
+            value={form.year}
+            label={'YYYY'}
+            type={'tel'}
+            name={'year'}
+            maxLength={4}
+            size={7}
+            error={formErrors.year}
+            onChange={handleChange}
+            placeholder={'2018'}
+          />
+        </Center>
+        <Center>
+          <ContinueButton fieldCheck={['year', 'month']} />
         </Center>
       </Slide>
 
@@ -410,21 +343,14 @@ function Form() {
             type={'tel'}
             size={25}
             name='monthly'
-            icon={faDollarSign}
+            LeadingIcon={faDollarSign}
             onChange={handleChange}
-            errorLabel={formErrors.monthly}
+            error={formErrors.monthly}
+            placeholder={'60,000'}
           />
         </Center>
         <Center>
-          <Button
-            // onClick={onClick}
-            disabled={formErrors.hasOwnProperty('monthly')}
-          >
-            CONTINUE
-            {!formErrors.hasOwnProperty('monthly') && (
-              <FontAwesomeIcon id={'icon'} icon={faArrowRight} />
-            )}
-          </Button>
+          <ContinueButton fieldCheck={['monthly']} />
         </Center>
       </Slide>
 
@@ -439,15 +365,7 @@ function Form() {
           currentValues={form.loanPurposes}
         />
         <Center>
-          <Button
-            // onClick={onClick}
-            disabled={formErrors.hasOwnProperty('loanPurposes')}
-          >
-            CONTINUE
-            {!formErrors.hasOwnProperty('loanPurposes') && (
-              <FontAwesomeIcon id={'icon'} icon={faArrowRight} />
-            )}
-          </Button>
+          <ContinueButton fieldCheck={['loanPurposes']} />
         </Center>
       </Slide>
 
@@ -466,19 +384,12 @@ function Form() {
             size={20}
             name='companyName'
             onChange={handleChange}
-            errorLabel={formErrors.companyName}
+            error={formErrors.companyName}
+            placeholder={'Solidify USA LLC'}
           />
         </Center>
         <Center>
-          <Button
-            // onClick={onClick}
-            disabled={formErrors.hasOwnProperty('companyName')}
-          >
-            CONTINUE
-            {!formErrors.hasOwnProperty('companyName') && (
-              <FontAwesomeIcon id={'icon'} icon={faArrowRight} />
-            )}
-          </Button>
+          <ContinueButton fieldCheck={['companyName']} />
         </Center>
       </Slide>
 
@@ -486,30 +397,26 @@ function Form() {
         <PrevQuestion />
         <h1>Which state is your business in?</h1>
         <Center>
-          <InputField
+          <Sandbox
+            onClick={handleClick}
             value={form.state}
             label={'Search and select a state'}
             size={30}
             name='state'
             onChange={handleChange}
-            errorLabel={formErrors.state}
+            error={formErrors.state}
+            placeholder={'New York'}
+            autoComplete={'off'}
+            filteredSuggestions={autoComplete.filteredSuggestions}
+            DropdownClick={handleClick}
+            onKeyDown={handleKeyDown}
+            activeSuggestionIndex={autoComplete.activeSuggestionIndex}
           />
         </Center>
-
         <Center>
-          <Button
-            // onClick={onClick}
-            disabled={formErrors.hasOwnProperty('state')}
-          >
-            CONTINUE
-            {!formErrors.hasOwnProperty('state') && (
-              <FontAwesomeIcon id={'icon'} icon={faArrowRight} />
-            )}
-          </Button>
+          <ContinueButton fieldCheck={['state']} />
         </Center>
       </Slide>
-
-      <AutoComplete options={months} input={form.month} activeSuggestion={0} />
 
       <div className='mb-3'>
         <button type='submit'>Create Account</button>

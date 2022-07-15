@@ -1,6 +1,6 @@
 import styled from 'styled-components'
 
-export const Dropdown = styled.div`
+export const DropdownContainer = styled.div`
   display: none;
   position: absolute;
   flex-direction: column;
@@ -21,7 +21,6 @@ export const Dropdown = styled.div`
   :visited {
     display: none;
   }
-
   :target {
     display: none;
   }

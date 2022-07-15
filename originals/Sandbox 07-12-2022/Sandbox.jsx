@@ -6,9 +6,11 @@ import {
   Icon,
   Error,
   IconWrapper,
-} from './styles/InputField.styled'
+  Dropdown,
+  List,
+} from './styles/Sandbox.styled'
 
-function InputField({
+function Sandbox({
   onClick,
   onChange,
   value,
@@ -22,10 +24,18 @@ function InputField({
   TrailingIcon,
   TrailingIconOnclick,
   error,
-  onFocus,
-  onBlur,
-  onMouseLeave,
+  DropdownClick,
+  onKeyDown,
+  autoComplete,
+  activeSuggestionIndex,
+  filteredSuggestions,
 }) {
+  const valueMatch =
+    filteredSuggestions &&
+    filteredSuggestions.filter((suggestion) => {
+      return suggestion.toLowerCase() === value.toLowerCase()
+    })
+
   return (
     <Container>
       <Border>
@@ -43,9 +53,8 @@ function InputField({
           name={name}
           size={size}
           icon={LeadingIcon}
-          onFocus={onFocus}
-          onBlur={onBlur}
-          onMouseLeave={onMouseLeave}
+          autoComplete={autoComplete}
+          onKeyDown={onKeyDown}
         />
         <Label icon={LeadingIcon}>{label}</Label>
         <IconWrapper style={{ width: '40.4px' }}>
@@ -54,9 +63,24 @@ function InputField({
           )}
         </IconWrapper>
         <Error>{error}</Error>
+        {filteredSuggestions && valueMatch.length === 0 && (
+          <Dropdown id='Dropdown'>
+            {filteredSuggestions.map((item, index) => (
+              <List
+                aria-selected={index === activeSuggestionIndex}
+                key={index}
+                value={item}
+                name={name}
+                onClick={DropdownClick}
+              >
+                {item}
+              </List>
+            ))}
+          </Dropdown>
+        )}
       </Border>
     </Container>
   )
 }
 
-export default InputField
+export default Sandbox

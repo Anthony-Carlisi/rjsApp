@@ -1,7 +1,7 @@
 import styled from 'styled-components'
 
-export const Dropdown = styled.div`
-  display: none;
+export const Container = styled.div`
+  display: flex;
   position: absolute;
   flex-direction: column;
   background-color: #fff;
@@ -14,17 +14,6 @@ export const Dropdown = styled.div`
     rgba(0, 0, 0, 0.1) 0px 0px 1px 0px;
   overflow: auto;
   max-height: 200px;
-
-  :hover {
-    display: flex;
-  }
-  :visited {
-    display: none;
-  }
-
-  :target {
-    display: none;
-  }
 `
 
 export const List = styled.li`
@@ -38,7 +27,7 @@ export const List = styled.li`
   /* background-color: #cecdcd; */
   background-color: ${({ suggestion }) => suggestion && '#cecdcd'};
 
-  :hover {
+  /* :hover {
     background-color: #cecdcd;
-  }
+  } */
 `

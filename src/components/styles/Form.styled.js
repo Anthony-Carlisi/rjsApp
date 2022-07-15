@@ -23,6 +23,10 @@ export const Center = styled.div`
   position: relative;
   margin: 10px 20px;
 `
+export const InputContainer = styled.div`
+  display: flex;
+  position: relative;
+`
 export const PrevButton = styled.div`
   cursor: pointer;
   width: 80px;
@@ -42,42 +46,6 @@ export const FormContainer = styled.form`
   max-width: 800px;
   background-color: #fbfcfc;
   margin: auto;
-`
-export const DropDownRow = styled.div`
-  display: flex;
-  /* margin-top: 200px; */
-  flex-flow: row wrap;
-  position: absolute;
-  top: 0px;
-  width: 335px;
-  background-color: #fff;
-  font-size: 20px;
-  border-radius: 4px;
-  border: solid #dee3e7 1px;
-  box-shadow: rgba(60, 64, 67, 0.3) 0px 1px 2px 0px,
-    rgba(60, 64, 67, 0.15) 0px 2px 6px 2px;
-  z-index: 10;
-
-  div {
-    pointer-events: none;
-  }
-
-  button {
-    width: 100px;
-    height: 40px;
-    margin: 5px 5px;
-    font-size: 16px;
-    border-radius: 5px;
-    border: solid #dee3e7 1px;
-    background: #fdfdfd;
-    cursor: pointer;
-
-    :hover {
-      background: #c7def9;
-      border-color: #007bff !important;
-      box-shadow: 0 2px 2px 0 #dee3e7;
-    }
-  }
 `
 export const Button = styled.button`
   transform: scale(1.1);

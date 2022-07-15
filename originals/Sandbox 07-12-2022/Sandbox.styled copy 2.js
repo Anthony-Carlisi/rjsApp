@@ -16,7 +16,7 @@ export const Border = styled.div`
   margin: 0 10px;
 
   li[aria-selected='true'] {
-    background: #cecdcd;
+    background: pink;
     cursor: pointer;
   }
 
@@ -89,7 +89,7 @@ export const Dropdown = styled.div`
   background-color: #fff;
   border-radius: 4px;
   width: 100%;
-  top: 20px;
+  top: 0px;
   z-index: 10;
   margin-top: 55px;
   box-shadow: rgba(0, 0, 0, 0.1) 0px 0px 5px 0px,

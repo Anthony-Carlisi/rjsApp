@@ -1,22 +1,25 @@
-import { Container, List } from './styles/AutoComplete.styled'
-import InputField from './InputField'
-function AutoComplete({ options, input, activeSuggestion }) {
-  const filteredOptions = options.filter(
-    (suggestion) => suggestion.toLowerCase().indexOf(input.toLowerCase()) > -1
-  )
+import { Dropdown, List } from './styles/AutoComplete.styled'
+
+function AutoComplete({ index, filtered, updateInput, updateIndex, name }) {
+  const handleClick = (item, name) => {
+    updateInput(item, name)
+    updateIndex(0)
+  }
+
   return (
-    <Container>
-      {filteredOptions.map((value, index) => (
+    <Dropdown id='Dropdown'>
+      {filtered.map((item, id) => (
         <List
-          key={index}
-          suggestion={activeSuggestion === index}
-          value={value}
-          // onClick={onClick}
+          aria-selected={id === index}
+          key={id}
+          value={item}
+          name={name}
+          onClick={() => handleClick(item, name)}
         >
-          {value}
+          {item}
         </List>
       ))}
-    </Container>
+    </Dropdown>
   )
 }
 

@@ -25,3 +25,14 @@ export const findObject = (obj, value) => {
   })
   return findBooleans.includes(true) ? true : false
 }
+
+export const filterOptions = (options, value) => {
+  return options.filter(
+    (item) => item.toLowerCase().indexOf(value.toLowerCase()) > -1
+  )
+}
+export const findInArray = (options, value) => {
+  return options.filter((item) => {
+    return item.toLowerCase() === value.toLowerCase()
+  })
+}
