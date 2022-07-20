@@ -1,4 +1,4 @@
-import { Dropdown, List } from './styles/AutoComplete.styled'
+import { Dropdown, List } from './AutoComplete.styled'
 
 function AutoComplete({ index, filtered, updateInput, updateIndex, name }) {
   const handleClick = (item, name) => {

@@ -51,6 +51,10 @@ export const Input = styled.input`
     transform: translateY(-50%) scale(0.9) !important;
   }
 
+  :not(:focus)::placeholder {
+    opacity: 0;
+  }
+
   /* transition: 0.1s ease-out; */
 `
 export const Label = styled.label`

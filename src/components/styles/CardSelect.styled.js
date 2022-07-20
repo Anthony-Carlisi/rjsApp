@@ -23,12 +23,15 @@ export const Card = styled.button`
     box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
     border-color: #007bff;`
   }};
-  :hover {
-    transform: scale(1.1);
-    transition-duration: 0.2s;
-    background: #c7def9;
-    box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
-    border-color: #007bff;
+
+  @media (hover: hover) {
+    :hover {
+      transform: scale(1.1);
+      transition-duration: 0.2s;
+      background: #c7def9;
+      box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
+      border-color: #007bff;
+    }
   }
 
   h3 {

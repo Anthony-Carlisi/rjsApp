@@ -23,15 +23,12 @@ export const Center = styled.div`
   position: relative;
   margin: 10px 20px;
 `
-export const InputContainer = styled.div`
-  display: flex;
-  position: relative;
-`
 export const PrevButton = styled.button`
   cursor: pointer;
   width: 100px;
   background: none;
   padding: 10px;
+  font-size: 1rem;
 
   :hover {
     #icon {
@@ -50,10 +47,11 @@ export const FormContainer = styled.form`
   margin: auto;
 `
 export const Button = styled.button`
+  display: flex;
   transform: scale(1.1);
   transition-duration: 0.2s;
   font-size: 24px;
-  margin: 10px 20px;
+  margin: 0 20px;
   padding: 10px;
   border: none;
   border-radius: 10px;
