@@ -1,9 +1,11 @@
 import styled from 'styled-components'
+import { TextField } from '@mui/material'
 
 export const Slide = styled.div`
   display: flex;
   flex-direction: column;
-  /* background-color: gray; */
+  justify-content: center;
+  align-items: center;
 
   h1 {
     text-align: center;
@@ -17,21 +19,17 @@ export const Slide = styled.div`
     margin: 10px 20px;
   }
 `
-export const Center = styled.div`
+export const Row = styled.div`
   display: flex;
   justify-content: center;
-  position: relative;
-  margin: 10px 20px;
-`
-export const InputContainer = styled.div`
-  display: flex;
-  position: relative;
 `
 export const PrevButton = styled.button`
   cursor: pointer;
   width: 100px;
   background: none;
   padding: 10px;
+  font-size: 1rem;
+  align-self: flex-start;
 
   :hover {
     #icon {
@@ -50,6 +48,7 @@ export const FormContainer = styled.form`
   margin: auto;
 `
 export const Button = styled.button`
+  display: flex;
   transform: scale(1.1);
   transition-duration: 0.2s;
   font-size: 24px;
@@ -77,3 +76,9 @@ export const Button = styled.button`
     }
   }
 `
+export const CustomTextField = styled(TextField)({
+  '& .MuiFormHelperText-root.Mui-error': {
+    position: 'absolute',
+    top: '100%',
+  },
+})

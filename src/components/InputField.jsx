@@ -27,18 +27,7 @@ function InputField({
   TrailingIconOnclick,
   error,
   autoComplete,
-  options,
-  onClickDropdown,
-  onKeyDown,
-  optionsIndex,
 }) {
-  const itemsRef = useRef([])
-  // you can access the elements with itemsRef.current[n]
-
-  useEffect(() => {
-    itemsRef.current = itemsRef.current.slice(0, options.length)
-  }, [options])
-
   return (
     <Container>
       <Border>
@@ -57,7 +46,6 @@ function InputField({
           size={size}
           icon={LeadingIcon}
           autoComplete={autoComplete}
-          onKeyDown={onKeyDown}
         />
         <Label icon={LeadingIcon}>{label}</Label>
         <IconWrapper style={{ width: '40.4px' }}>
@@ -66,24 +54,6 @@ function InputField({
           )}
         </IconWrapper>
         <Error>{error}</Error>
-        {options &&
-          options.filter((item) => {
-            return item.toLowerCase() === value.toLowerCase()
-          }).length === 0 && (
-            <Dropdown id='Dropdown'>
-              {options.map((item, id) => (
-                <List
-                  ref={(el) => (itemsRef.current[id] = el)}
-                  aria-selected={id === optionsIndex}
-                  key={id}
-                  name={name}
-                  onClick={() => onClickDropdown(item, name)}
-                >
-                  {item}
-                </List>
-              ))}
-            </Dropdown>
-          )}
       </Border>
     </Container>
   )

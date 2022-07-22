@@ -12,7 +12,7 @@ export const validEmail = (text) => {
 
 export const currencyValue = (value) => {
   return value === 0
-    ? ''
+    ? null
     : value.toLocaleString('en-US', {
         minimumFractionDigits: 0,
         maximumFractionDigits: 0,
@@ -26,6 +26,13 @@ export const findObject = (obj, value) => {
   return findBooleans.includes(true) ? true : false
 }
 
+export const findEmptyValues = (obj, value) => {
+  const findBooleans = value.map((value) => {
+    return obj[value] ? true : false
+  })
+  return findBooleans.includes(false) ? true : false
+}
+
 export const filterOptions = (options, value) => {
   return options.filter(
     (item) => item.toLowerCase().indexOf(value.toLowerCase()) > -1
@@ -35,4 +42,14 @@ export const findInArray = (options, value) => {
   return options.filter((item) => {
     return item.toLowerCase() === value.toLowerCase()
   })
+}
+export const numericOnly = (value) => {
+  return value ? value.replace(/\D/g, '') : ''
+}
+export const lettersOnly = (value) => {
+  return value ? value.replace(/[^a-z S]+/i, '') : ''
+}
+export const phoneValue = (value) => {
+  var x = value.replace(/\D/g, '').match(/(\d{0,3})(\d{0,3})(\d{0,4})/)
+  return !x[2] ? x[1] : '(' + x[1] + ') ' + x[2] + (x[3] ? '-' + x[3] : '')
 }

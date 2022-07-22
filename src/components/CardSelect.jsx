@@ -1,16 +1,16 @@
 import { FlexWrapper, Card } from './styles/CardSelect.styled'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 
-function CardSelect({ onClick, array, name, currentValues }) {
+function CardSelect({ onClick, options, name, currentValues }) {
   return (
     <FlexWrapper>
-      {array.map(({ value, icon }, index) => (
+      {options.map(({ value, icon }, index) => (
         <ul key={index}>
           <li>
             <Card
               value={value}
               currentValues={currentValues}
-              array={array}
+              options={options}
               onClick={onClick}
               name={name}
             >

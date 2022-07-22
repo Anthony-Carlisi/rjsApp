@@ -1,274 +1,156 @@
 import { useState } from 'react'
-import { months, purposes, entityInfo, states } from './utils/StaticData'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import InputField from './InputField'
-import CardSelect from './CardSelect'
+import { Autocomplete, InputAdornment } from '@mui/material'
+import { states, entityInfo, months, purposes } from './utils/StaticData'
 import {
   Slide,
-  Center,
-  PrevButton,
+  Row,
   FormContainer,
   Button,
-} from './styles/Form.styled'
+  PrevButton,
+  CustomTextField,
+} from './styles/Form2.styled'
+import {
+  faAngleLeft,
+  faAngleRight,
+  faEnvelope,
+  faPhone,
+  faDollarSign,
+} from '@fortawesome/free-solid-svg-icons'
 import {
   minMaxLength,
   currencyValue,
   validEmail,
   findObject,
   findInArray,
-  filterOptions,
+  numericOnly,
+  lettersOnly,
+  phoneValue,
+  findEmptyValues,
 } from './utils/Validations'
-import {
-  faArrowLeft,
-  faArrowRight,
-  faDollarSign,
-  faPhone,
-  faEnvelope,
-} from '@fortawesome/free-solid-svg-icons'
+import CardSelect from './CardSelect'
 
-function Form() {
-  const [form, setForm] = useState({
-    companyType: '',
-    loanAmount: '',
-    month: '',
-    year: '',
-    monthly: '',
-    loanPurposes: [],
-    companyName: '',
-    state: '',
-    firstName: '',
-    lastName: '',
-    phone: '',
-    email: '',
-  })
-  const [formErrors, setFormErrors] = useState({
-    loanAmount: '',
-    month: '',
-    year: '',
-    monthly: '',
-    loanPurposes: '',
-    companyName: '',
-    state: '',
-    firstName: '',
-    lastName: '',
-    phone: '',
-    email: '',
-  })
-  const [index, setIndex] = useState({
-    month: 0,
-    state: 0,
-  })
-  const [options, setOptions] = useState({
-    month: months,
-    state: states,
-  })
-  const [currentStep, setCurrentStep] = useState(6)
+function Form2() {
+  const [form, setForm] = useState({})
+  const [formErrors, setFormErrors] = useState({})
+  const [currentStep, setCurrentStep] = useState(0)
 
-  const handleChange = (e) => {
-    const { name, value } = e.target
-
+  const handleChange = (e, input, field) => {
+    let name = field ? field : e.target.name
+    let value = input ? input : e.target.value
+    let error = ''
+    // Switch for field names
     switch (name) {
-      case 'month':
-        setForm({ ...form, [name]: value })
-        setIndex({ ...index, [name]: 0 })
-        setOptions({ ...options, [name]: filterOptions(months, value) })
-        if (findInArray(months, value).length === 1) {
-          setForm({ ...form, [name]: findInArray(months, value)[0] })
-          delete formErrors[name]
-        } else {
-          setFormErrors({
-            ...formErrors,
-            [name]: 'Please select or enter month',
-          })
-        }
+      case 'monthly':
+      case 'loanAmount':
+        // Sanitize field (removes Letters and special characters)
+        value = numericOnly(value)
+        // Validation Checks
+        if (minMaxLength(value, 4)) error = '4 digits minimum'
+        //Mask Field
+        value = currencyValue(Number(value))
         break
 
-      case 'state':
-        setForm({ ...form, [name]: value })
-        setIndex({ ...index, [name]: 0 })
-        setOptions({ ...options, [name]: filterOptions(states, value) })
-        if (findInArray(states, value).length === 1) {
-          setForm({ ...form, [name]: findInArray(states, value)[0] })
-          delete formErrors[name]
-        } else {
-          setFormErrors({
-            ...formErrors,
-            [name]: 'Please select or enter state',
-          })
-        }
+      case 'year':
+        value = numericOnly(value)
+        if (value < 1900 || value > 2022) error = 'Enter valid year'
         break
 
-      case 'companyType':
       case 'firstName':
       case 'lastName':
       case 'companyName':
-        e.preventDefault()
-        setForm({ ...form, [name]: value })
+        value = lettersOnly(value)
+        break
 
-        value
-          ? delete formErrors[name]
-          : setFormErrors({ ...formErrors, [name]: '' })
+      case 'email':
+        if (validEmail(value)) error = 'Enter valid email'
+        break
 
+      case 'phone':
+        value = numericOnly(value)
+        if (minMaxLength(value, 10)) error = 'Enter valid phone number'
+        value = phoneValue(value)
         break
 
       case 'loanPurposes':
         e.preventDefault()
-        if (form.loanPurposes.includes(value) === true) {
-          setForm({
-            ...form,
-            loanPurposes: form.loanPurposes.filter((item) => item !== value),
-          })
-
-          if (form.loanPurposes.length <= 1)
-            setFormErrors({ ...formErrors, loanPurposes: '' })
-        } else {
-          setForm({
-            ...form,
-            loanPurposes: [...form.loanPurposes, value],
-          })
-          delete formErrors.loanPurposes
+        if (form[name] && form[name].includes(value))
+          value = form[name].filter((item) => item !== value)
+        else {
+          value = form[name] ? [...form[name], value] : [value]
         }
         break
 
-      case 'email':
-        setForm({ ...form, email: value })
-        validEmail(value)
-          ? setFormErrors({
-              ...formErrors,
-              [name]: `Enter a Valid Email`,
-            })
-          : delete formErrors[name]
+      case 'month':
+        if (value && findInArray(months, value).length !== 1)
+          error = 'Please select month'
         break
 
-      case 'phone':
-        var x = e.target.value
-          .replace(/\D/g, '')
-          .match(/(\d{0,3})(\d{0,3})(\d{0,4})/)
-        e.target.value = !x[2]
-          ? x[1]
-          : '(' + x[1] + ') ' + x[2] + (x[3] ? '-' + x[3] : '')
-
-        e.target.value.length === 14
-          ? delete formErrors[name]
-          : setFormErrors({
-              ...formErrors,
-              [name]: `Enter valid phone number`,
-            })
-        setForm({ ...form, [name]: e.target.value })
-
+      case 'state':
+        if (value && findInArray(states, value).length !== 1)
+          error = 'Please select state'
         break
-
-      case 'monthly':
-      case 'loanAmount':
-        setForm({ ...form, [name]: value.replace(/\D/g, '') })
-        minMaxLength(value.replace(/\D/g, ''), 4)
-          ? setFormErrors({
-              ...formErrors,
-              [name]: `4 digits minimum`,
-            })
-          : delete formErrors[name]
-        break
-
-      case 'year':
-        setForm({ ...form, year: value.replace(/\D/g, '') })
-        const yearCheck = value < 1900 || value > 2022
-        if (minMaxLength(value, 4)) {
-          setFormErrors({
-            ...formErrors,
-            [name]: `4 digits minimum`,
-          })
-        } else if (yearCheck) {
-          setFormErrors({
-            ...formErrors,
-            [name]: `Enter a Valid Year`,
-          })
-        } else {
-          delete formErrors[name]
-        }
+      case 'companyType':
+        e.preventDefault()
+        setCurrentStep(currentStep + 1)
         break
 
       default:
         break
     }
-  }
 
-  const PrevQuestion = () => (
-    <PrevButton type='button' name={'prevButton'} onClick={handleClick}>
-      <FontAwesomeIcon id={'icon'} color='#1f4058' icon={faArrowLeft} />
-      Previous
-    </PrevButton>
-  )
+    //Global validation checks
+    if (minMaxLength(value, 1)) {
+      error = 'Cannot be empty'
+    }
+
+    // Sets Errors
+    if (error) setFormErrors({ ...formErrors, [name]: error })
+
+    // Deletes Errors
+    if (!error && formErrors[name]) delete formErrors[name]
+
+    // Sets Values
+    setForm({ ...form, [name]: value })
+  }
 
   const ContinueButton = ({ fieldCheck }) => {
     return (
       <Button
-        onClick={handleClick}
-        name={'continueButton'}
-        disabled={findObject(formErrors, fieldCheck)}
+        onClick={() => {
+          setCurrentStep(currentStep + 1)
+        }}
+        disabled={
+          findObject(formErrors, fieldCheck) ||
+          findEmptyValues(form, fieldCheck)
+            ? true
+            : false
+        }
       >
         CONTINUE
-        {!findObject(formErrors, fieldCheck) && (
-          <FontAwesomeIcon id={'icon'} icon={faArrowRight} />
-        )}
+        {findObject(formErrors, fieldCheck) || findEmptyValues(form, fieldCheck)
+          ? false
+          : true && (
+              <FontAwesomeIcon id={'icon'} icon={faAngleRight} />
+              // <ArrowForwardIosIcon id={'icon'} />
+            )}
       </Button>
     )
   }
-  const handleClick = (e) => {
-    const { name, value } = e.target
-    switch (name) {
-      case 'continueButton':
-        e.preventDefault()
-        setCurrentStep(currentStep + 1)
-        break
-      case 'companyType':
-        e.preventDefault()
-        setForm({ ...form, [name]: value })
-        setCurrentStep(currentStep + 1)
-        break
-      case 'prevButton':
-        e.preventDefault()
-        if (currentStep === 0) return
-        setCurrentStep(currentStep - 1)
-        break
 
-      default:
-        break
-    }
-  }
-
-  const handleKeyDown = (e) => {
-    const { name } = e.target
-    switch (e.key) {
-      case 'ArrowUp':
-        e.preventDefault()
-        if (index[name] === 0) return
-        setIndex({ ...index, [name]: index[name] - 1 })
-        break
-
-      case 'ArrowDown':
-        e.preventDefault()
-        if (index[name] === options[name].length - 1) return
-        setIndex({ ...index, [name]: index[name] + 1 })
-
-        break
-      case 'Tab':
-      case 'Enter':
-        e.preventDefault()
-        setForm({ ...form, [name]: options[name][index[name]] })
-        setIndex({ ...index, [name]: 0 })
-        delete formErrors[name]
-        break
-      default:
-        break
-    }
-  }
-
-  const handleDropdownClick = (input, name) => {
-    setForm({ ...form, [name]: input })
-    delete formErrors[name]
-  }
+  const PrevQuestion = () => (
+    <PrevButton
+      type='button'
+      name={'prevButton'}
+      onClick={() => setCurrentStep(currentStep - 1)}
+    >
+      <FontAwesomeIcon id={'icon'} color='#1f4058' icon={faAngleLeft} />
+      Previous
+    </PrevButton>
+  )
 
   const steps = [
+    //First Question Card type of Entity info
     <Slide>
       <h1>What type of business do you own?</h1>
       <p id='sub'>
@@ -276,100 +158,112 @@ function Form() {
         impact your credit score.
       </p>
       <CardSelect
-        onClick={handleClick}
-        array={entityInfo}
         name={'companyType'}
+        onClick={handleChange}
+        options={entityInfo}
+        currentValues={form.companyType}
       />
     </Slide>,
+    // Second Question Loan Amount Needed
     <Slide>
       <PrevQuestion />
       <h1>How much money do you need?</h1>
-      <Center>
-        <InputField
-          value={currencyValue(Number(form.loanAmount))}
-          label={'Loan Amount'}
-          type={'tel'}
-          size={8}
-          name='loanAmount'
-          onChange={handleChange}
-          error={formErrors.loanAmount}
-          placeholder={'50,000'}
-          LeadingIcon={faDollarSign}
-        />
-      </Center>
-      <Center>
-        <ContinueButton fieldCheck={['loanAmount']} />
-      </Center>
+      <CustomTextField
+        value={form.loanAmount || ''}
+        sx={{ mx: 2, my: 2 }}
+        label={'Loan Amount'}
+        type={'tel'}
+        name='loanAmount'
+        onChange={handleChange}
+        error={formErrors.loanAmount ? true : false}
+        helperText={formErrors.loanAmount}
+        placeholder={'50,000'}
+        InputProps={{
+          startAdornment: (
+            <InputAdornment position='start'>
+              <FontAwesomeIcon icon={faDollarSign} />
+            </InputAdornment>
+          ),
+        }}
+      />
+
+      <ContinueButton fieldCheck={['loanAmount']} />
     </Slide>,
+    // Third Question what month and year
     <Slide>
       <PrevQuestion />
-      <h1>When did you start your business?</h1>
-      <p id='sub'>If you don't remember the month, take your best guess</p>
-      <Center>
-        <InputField
-          value={form.month}
-          label={'Select or enter month'}
-          size={18}
-          name={'month'}
-          onChange={handleChange}
-          error={formErrors.month}
-          placeholder={'January'}
-          autoComplete={'off'}
-          options={filterOptions(months, form.month)}
-          onClickDropdown={handleDropdownClick}
-          onKeyDown={handleKeyDown}
-          optionsIndex={index.month}
+      <h1>Which state is your business in?</h1>
+      <Row>
+        <Autocomplete
+          autoSelect
+          sx={{ width: 300, my: 2, mx: 2 }}
+          options={months}
+          value={form.month || ''}
+          onChange={(e, value) => handleChange(e, value, 'month')}
+          isOptionEqualToValue={(option, value) => option.value === value.value}
+          renderInput={(params) => (
+            <CustomTextField
+              {...params}
+              name={'month'}
+              error={formErrors.month ? true : false}
+              helperText={formErrors.month}
+              label='Search and select month'
+            />
+          )}
         />
-        <InputField
-          value={form.year}
+        <CustomTextField
+          value={form.year || ''}
           label={'YYYY'}
           type={'tel'}
           name={'year'}
-          maxLength={4}
-          size={7}
-          error={formErrors.year}
+          error={formErrors.year ? true : false}
+          helperText={formErrors.year}
           onChange={handleChange}
           placeholder={'2018'}
+          inputProps={{ maxLength: 4 }}
+          sx={{ my: 2, mx: 2 }}
         />
-      </Center>
-      <Center>
-        <ContinueButton fieldCheck={['year', 'month']} />
-      </Center>
+      </Row>
+      <ContinueButton fieldCheck={['year', 'month']} />
     </Slide>,
+    // Fourth question monthly revenue
     <Slide>
       <PrevQuestion />
       <h1>What's your average monthly revenue over the last 3 months?</h1>
-      <Center>
-        <InputField
-          value={currencyValue(Number(form.monthly))}
-          label={'Average monthly revenue'}
-          type={'tel'}
-          size={25}
-          name='monthly'
-          LeadingIcon={faDollarSign}
-          onChange={handleChange}
-          error={formErrors.monthly}
-          placeholder={'60,000'}
-        />
-      </Center>
-      <Center>
-        <ContinueButton fieldCheck={['monthly']} />
-      </Center>
+      <CustomTextField
+        value={form.monthly || ''}
+        sx={{ width: 300, mx: 2, my: 2 }}
+        label={'Average monthly revenue'}
+        type={'tel'}
+        name='monthly'
+        onChange={handleChange}
+        error={formErrors.monthly ? true : false}
+        helperText={formErrors.monthly}
+        placeholder={'60,000'}
+        InputProps={{
+          startAdornment: (
+            <InputAdornment position='start'>
+              <FontAwesomeIcon icon={faDollarSign} />
+            </InputAdornment>
+          ),
+        }}
+      />
+      <ContinueButton fieldCheck={['monthly']} />
     </Slide>,
+    // Fifth Question loan purposes
     <Slide>
       <PrevQuestion />
       <h1>What are you getting financing for?</h1>
       <p id='sub'>Select your loan purpose(s)</p>
       <CardSelect
         onClick={handleChange}
-        array={purposes}
+        options={purposes}
         name={'loanPurposes'}
         currentValues={form.loanPurposes}
       />
-      <Center>
-        <ContinueButton fieldCheck={['loanPurposes']} />
-      </Center>
+      <ContinueButton fieldCheck={['loanPurposes']} />
     </Slide>,
+    // Sixth Question company name
     <Slide>
       <PrevQuestion />
       <h1>What's the name of your business?</h1>
@@ -377,114 +271,114 @@ function Form() {
         This information will only be shared with our authorized lending
         partners if you choose to view your lending options.
       </p>
-      <Center>
-        <InputField
-          value={form.companyName}
-          label={'Business name'}
-          type={'text'}
-          size={20}
-          name='companyName'
-          onChange={handleChange}
-          error={formErrors.companyName}
-          placeholder={'Solidify USA LLC'}
-        />
-      </Center>
-      <Center>
-        <ContinueButton fieldCheck={['companyName']} />
-      </Center>
+      <CustomTextField
+        value={form.companyName || ''}
+        sx={{ width: 300, mx: 2, my: 2 }}
+        label={'Business name'}
+        name='companyName'
+        onChange={handleChange}
+        placeholder={'Solidify USA LLC'}
+        error={formErrors.companyName ? true : false}
+        helperText={formErrors.companyName}
+      />
+      <ContinueButton fieldCheck={['companyName']} />
     </Slide>,
+    // Seventh Question which state
     <Slide>
       <PrevQuestion />
       <h1>Which state is your business in?</h1>
-      <Center>
-        <InputField
-          value={form.state}
-          label={'Search and select a state'}
-          size={30}
-          name='state'
-          onChange={handleChange}
-          error={formErrors.state}
-          placeholder={'New York'}
-          autoComplete={'off'}
-          options={filterOptions(states, form.state)}
-          onClickDropdown={handleDropdownClick}
-          onKeyDown={handleKeyDown}
-          optionsIndex={index.state}
-        />
-      </Center>
-      <Center>
-        <ContinueButton fieldCheck={['state']} />
-      </Center>
+      <Autocomplete
+        autoSelect
+        sx={{ width: 300, mx: 2, my: 2 }}
+        options={states}
+        value={form.state || ''}
+        onChange={(e, value) => handleChange(e, value, 'state')}
+        isOptionEqualToValue={(option, value) => option.value === value.value}
+        renderInput={(params) => (
+          <CustomTextField
+            {...params}
+            name={'state'}
+            error={formErrors.state ? true : false}
+            helperText={formErrors.state}
+            label='Search and select your state'
+          />
+        )}
+      />
+      <ContinueButton fieldCheck={['state']} />
     </Slide>,
+    // Eighth Question whats your name
     <Slide>
       <PrevQuestion />
       <h1>What's your name?</h1>
-      <Center>
-        <InputField
-          value={form.firstName}
-          label={'First Name'}
-          type={'text'}
-          size={20}
-          name='firstName'
-          onChange={handleChange}
-          error={formErrors.firstName}
-          placeholder={'John'}
-        />
-      </Center>
-
-      <Center>
-        <InputField
-          value={form.lastName}
-          label={'Last Name'}
-          type={'text'}
-          size={20}
-          name='lastName'
-          onChange={handleChange}
-          error={formErrors.lastName}
-          placeholder={'Doe'}
-        />
-      </Center>
-      <Center>
-        <ContinueButton fieldCheck={['firstName', 'lastName']} />
-      </Center>
+      <CustomTextField
+        value={form.firstName || ''}
+        sx={{ width: 300, mx: 2, my: 2 }}
+        label={'First Name'}
+        type={'text'}
+        name='firstName'
+        onChange={handleChange}
+        error={formErrors.firstName ? true : false}
+        helperText={formErrors.firstName}
+        placeholder={'John'}
+      />
+      <CustomTextField
+        value={form.lastName || ''}
+        sx={{ width: 300, mx: 2, my: 2 }}
+        label={'Last Name'}
+        type={'text'}
+        name='lastName'
+        onChange={handleChange}
+        placeholder={'Doe'}
+        error={formErrors.lastName ? true : false}
+        helperText={formErrors.lastName}
+      />
+      <ContinueButton fieldCheck={['firstName', 'lastName']} />
     </Slide>,
+    // Ninth Question whats your contact info
     <Slide>
       <PrevQuestion />
       <h1>What's the best way to reach you?</h1>
-      <Center>
-        <InputField
-          value={form.phone}
-          label={'Your mobile phone number'}
-          type={'tel'}
-          size={20}
-          name='phone'
-          onChange={handleChange}
-          error={formErrors.phone}
-          placeholder={'(555) 555-5555'}
-          LeadingIcon={faPhone}
-        />
-      </Center>
-
-      <Center>
-        <InputField
-          value={form.email}
-          label={'Your email address'}
-          type={'text'}
-          size={20}
-          name='email'
-          onChange={handleChange}
-          error={formErrors.email}
-          placeholder={'getmefunded@test.com'}
-          LeadingIcon={faEnvelope}
-        />
-      </Center>
-      <Center>
-        <ContinueButton fieldCheck={['phone', 'email']} />
-      </Center>
+      <CustomTextField
+        value={form.phone || ''}
+        sx={{ width: 300, mx: 2, my: 2 }}
+        label={'Your mobile phone number'}
+        type={'tel'}
+        name='phone'
+        onChange={handleChange}
+        error={formErrors.phone ? true : false}
+        helperText={formErrors.phone}
+        placeholder={'(555) 555-5555'}
+        InputProps={{
+          startAdornment: (
+            <InputAdornment position='start'>
+              <FontAwesomeIcon icon={faPhone} />
+            </InputAdornment>
+          ),
+        }}
+      />
+      <CustomTextField
+        value={form.email || ''}
+        sx={{ width: 300, mx: 2, my: 2 }}
+        label={'Your email address'}
+        type={'text'}
+        name='email'
+        onChange={handleChange}
+        error={formErrors.email ? true : false}
+        helperText={formErrors.email}
+        placeholder={'getmefunded@solidifyusa.com'}
+        InputProps={{
+          startAdornment: (
+            <InputAdornment position='start'>
+              <FontAwesomeIcon icon={faEnvelope} />
+            </InputAdornment>
+          ),
+        }}
+      />
+      <ContinueButton fieldCheck={['phone', 'email']} />
     </Slide>,
   ]
 
   return <FormContainer>{steps[currentStep]}</FormContainer>
 }
 
-export default Form
+export default Form2
