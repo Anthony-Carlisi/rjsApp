@@ -11,14 +11,14 @@ function InputField(props) {
     onClickTrailingIcon,
   } = props
   return (
-    <Border error={error}>
+    <Border error={error} icon={leadingIcon}>
       <IconWrapper>
         {leadingIcon && (
           <Icon onClick={onClickLeadingIcon} icon={leadingIcon} />
         )}
       </IconWrapper>
       <Input {...props} />
-      <Label icon={leadingIcon}>{label}</Label>
+      <Label>{label}</Label>
       <IconWrapper style={{ width: '40.4px' }}>
         {trailingIcon && (
           <Icon onClick={onClickTrailingIcon} icon={trailingIcon} />
@@ -51,14 +51,14 @@ const Border = styled.div`
 
   label {
     color: ${({ error }) => error && 'red'};
+    left: ${({ icon }) => icon && '1.2rem'};
   }
 `
 const Input = styled.input`
   font-size: 1rem;
   border-radius: 5px;
   padding: 1rem 0;
-  padding-left: 0.7rem;
-  padding-left: ${({ icon }) => icon && '0rem'};
+  padding-left: ${({ leadingIcon }) => !leadingIcon && '0.7rem'};
   -webkit-tap-highlight-color: transparent;
 
   :not(:placeholder-shown) + label {
@@ -78,7 +78,6 @@ const Label = styled.label`
   font-size: 1rem;
   color: #767676;
   left: 0rem;
-  left: ${({ icon }) => icon && '1.2rem'};
   top: 50%;
   transform: translateY(-50%);
   background-color: white;
