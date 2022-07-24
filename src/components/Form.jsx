@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { Autocomplete, InputAdornment } from '@mui/material'
+import { Autocomplete } from '@mui/material'
 import { states, entityInfo, months, purposes } from './utils/StaticData'
 import {
   Slide,
@@ -9,7 +9,9 @@ import {
   Button,
   PrevButton,
   CustomTextField,
-} from './styles/Form2.styled'
+} from './styles/Form.styled'
+
+import { Input, Border, Label, Error } from './styles/InputField.styled'
 import {
   faAngleLeft,
   faAngleRight,
@@ -29,8 +31,8 @@ import {
   findEmptyValues,
 } from './utils/Validations'
 import CardSelect from './CardSelect'
-
-function Form2() {
+import InputField from './InputField'
+function Form() {
   const [form, setForm] = useState({})
   const [formErrors, setFormErrors] = useState({})
   const [currentStep, setCurrentStep] = useState(0)
@@ -43,11 +45,8 @@ function Form2() {
     switch (name) {
       case 'monthly':
       case 'loanAmount':
-        // Sanitize field (removes Letters and special characters)
         value = numericOnly(value)
-        // Validation Checks
         if (minMaxLength(value, 4)) error = '4 digits minimum'
-        //Mask Field
         value = currencyValue(Number(value))
         break
 
@@ -90,6 +89,7 @@ function Form2() {
         if (value && findInArray(states, value).length !== 1)
           error = 'Please select state'
         break
+
       case 'companyType':
         e.preventDefault()
         setCurrentStep(currentStep + 1)
@@ -98,18 +98,14 @@ function Form2() {
       default:
         break
     }
-
     //Global validation checks
     if (minMaxLength(value, 1)) {
       error = 'Cannot be empty'
     }
-
     // Sets Errors
     if (error) setFormErrors({ ...formErrors, [name]: error })
-
     // Deletes Errors
     if (!error && formErrors[name]) delete formErrors[name]
-
     // Sets Values
     setForm({ ...form, [name]: value })
   }
@@ -168,25 +164,16 @@ function Form2() {
     <Slide>
       <PrevQuestion />
       <h1>How much money do you need?</h1>
-      <CustomTextField
+      <InputField
         value={form.loanAmount || ''}
-        sx={{ mx: 2, my: 2 }}
         label={'Loan Amount'}
         type={'tel'}
         name='loanAmount'
         onChange={handleChange}
-        error={formErrors.loanAmount ? true : false}
-        helperText={formErrors.loanAmount}
+        leadingIcon={faDollarSign}
+        error={formErrors.loanAmount}
         placeholder={'50,000'}
-        InputProps={{
-          startAdornment: (
-            <InputAdornment position='start'>
-              <FontAwesomeIcon icon={faDollarSign} />
-            </InputAdornment>
-          ),
-        }}
       />
-
       <ContinueButton fieldCheck={['loanAmount']} />
     </Slide>,
     // Third Question what month and year
@@ -195,33 +182,32 @@ function Form2() {
       <h1>Which state is your business in?</h1>
       <Row>
         <Autocomplete
-          autoSelect
-          sx={{ width: 300, my: 2, mx: 2 }}
           options={months}
           value={form.month || ''}
           onChange={(e, value) => handleChange(e, value, 'month')}
           isOptionEqualToValue={(option, value) => option.value === value.value}
           renderInput={(params) => (
-            <CustomTextField
-              {...params}
-              name={'month'}
-              error={formErrors.month ? true : false}
-              helperText={formErrors.month}
-              label='Search and select month'
-            />
+            <Border ref={params.InputProps.ref} error={formErrors.month}>
+              <Input
+                size={25}
+                {...params.inputProps}
+                placeholder={'New York'}
+              />
+              <Label>Search and select month</Label>
+              <Error>{formErrors.month}</Error>
+            </Border>
           )}
         />
-        <CustomTextField
+        <InputField
+          size={5}
+          maxLength={4}
           value={form.year || ''}
           label={'YYYY'}
           type={'tel'}
           name={'year'}
-          error={formErrors.year ? true : false}
-          helperText={formErrors.year}
           onChange={handleChange}
+          error={formErrors.year}
           placeholder={'2018'}
-          inputProps={{ maxLength: 4 }}
-          sx={{ my: 2, mx: 2 }}
         />
       </Row>
       <ContinueButton fieldCheck={['year', 'month']} />
@@ -230,23 +216,15 @@ function Form2() {
     <Slide>
       <PrevQuestion />
       <h1>What's your average monthly revenue over the last 3 months?</h1>
-      <CustomTextField
+      <InputField
         value={form.monthly || ''}
-        sx={{ width: 300, mx: 2, my: 2 }}
-        label={'Average monthly revenue'}
+        label={'Loan Amount'}
         type={'tel'}
         name='monthly'
         onChange={handleChange}
-        error={formErrors.monthly ? true : false}
-        helperText={formErrors.monthly}
+        leadingIcon={faDollarSign}
+        error={formErrors.monthly}
         placeholder={'60,000'}
-        InputProps={{
-          startAdornment: (
-            <InputAdornment position='start'>
-              <FontAwesomeIcon icon={faDollarSign} />
-            </InputAdornment>
-          ),
-        }}
       />
       <ContinueButton fieldCheck={['monthly']} />
     </Slide>,
@@ -271,15 +249,14 @@ function Form2() {
         This information will only be shared with our authorized lending
         partners if you choose to view your lending options.
       </p>
-      <CustomTextField
+      <InputField
         value={form.companyName || ''}
-        sx={{ width: 300, mx: 2, my: 2 }}
         label={'Business name'}
         name='companyName'
         onChange={handleChange}
+        leadingIcon={faDollarSign}
+        error={formErrors.companyName}
         placeholder={'Solidify USA LLC'}
-        error={formErrors.companyName ? true : false}
-        helperText={formErrors.companyName}
       />
       <ContinueButton fieldCheck={['companyName']} />
     </Slide>,
@@ -310,27 +287,21 @@ function Form2() {
     <Slide>
       <PrevQuestion />
       <h1>What's your name?</h1>
-      <CustomTextField
+      <InputField
         value={form.firstName || ''}
-        sx={{ width: 300, mx: 2, my: 2 }}
         label={'First Name'}
-        type={'text'}
         name='firstName'
         onChange={handleChange}
-        error={formErrors.firstName ? true : false}
-        helperText={formErrors.firstName}
+        error={formErrors.firstName}
         placeholder={'John'}
       />
-      <CustomTextField
+      <InputField
         value={form.lastName || ''}
-        sx={{ width: 300, mx: 2, my: 2 }}
         label={'Last Name'}
-        type={'text'}
         name='lastName'
         onChange={handleChange}
+        error={formErrors.lastName}
         placeholder={'Doe'}
-        error={formErrors.lastName ? true : false}
-        helperText={formErrors.lastName}
       />
       <ContinueButton fieldCheck={['firstName', 'lastName']} />
     </Slide>,
@@ -338,41 +309,24 @@ function Form2() {
     <Slide>
       <PrevQuestion />
       <h1>What's the best way to reach you?</h1>
-      <CustomTextField
+      <InputField
         value={form.phone || ''}
-        sx={{ width: 300, mx: 2, my: 2 }}
         label={'Your mobile phone number'}
         type={'tel'}
         name='phone'
         onChange={handleChange}
-        error={formErrors.phone ? true : false}
-        helperText={formErrors.phone}
+        error={formErrors.phone}
         placeholder={'(555) 555-5555'}
-        InputProps={{
-          startAdornment: (
-            <InputAdornment position='start'>
-              <FontAwesomeIcon icon={faPhone} />
-            </InputAdornment>
-          ),
-        }}
+        leadingIcon={faPhone}
       />
-      <CustomTextField
+      <InputField
         value={form.email || ''}
-        sx={{ width: 300, mx: 2, my: 2 }}
         label={'Your email address'}
-        type={'text'}
         name='email'
         onChange={handleChange}
-        error={formErrors.email ? true : false}
-        helperText={formErrors.email}
+        error={formErrors.email}
         placeholder={'getmefunded@solidifyusa.com'}
-        InputProps={{
-          startAdornment: (
-            <InputAdornment position='start'>
-              <FontAwesomeIcon icon={faEnvelope} />
-            </InputAdornment>
-          ),
-        }}
+        leadingIcon={faEnvelope}
       />
       <ContinueButton fieldCheck={['phone', 'email']} />
     </Slide>,
@@ -381,4 +335,4 @@ function Form2() {
   return <FormContainer>{steps[currentStep]}</FormContainer>
 }
 
-export default Form2
+export default Form
