@@ -10,6 +10,7 @@ function InputField(props) {
     trailingIcon,
     onClickTrailingIcon,
   } = props
+
   return (
     <Border error={error} icon={leadingIcon}>
       <IconWrapper>
@@ -17,9 +18,9 @@ function InputField(props) {
           <Icon onClick={onClickLeadingIcon} icon={leadingIcon} />
         )}
       </IconWrapper>
-      <Input {...props} />
+      <Input {...props} leadingIcon={leadingIcon} trailingIcon={trailingIcon} />
       <Label>{label}</Label>
-      <IconWrapper style={{ width: '40.4px' }}>
+      <IconWrapper>
         {trailingIcon && (
           <Icon onClick={onClickTrailingIcon} icon={trailingIcon} />
         )}
@@ -30,6 +31,7 @@ function InputField(props) {
 }
 
 const Border = styled.div`
+  max-width: 300px;
   display: flex;
   position: relative;
   border: 1px solid;
@@ -51,14 +53,16 @@ const Border = styled.div`
 
   label {
     color: ${({ error }) => error && 'red'};
-    left: ${({ icon }) => icon && '1.2rem'};
+    left: ${({ icon }) => icon && '1.6rem'};
   }
 `
 const Input = styled.input`
   font-size: 1rem;
   border-radius: 5px;
-  padding: 1rem 0;
-  padding-left: ${({ leadingIcon }) => !leadingIcon && '0.7rem'};
+  width: 100%;
+  padding: 10px;
+  padding-left: ${({ leadingIcon }) => leadingIcon && '0px'};
+  padding-right: ${({ trailingIcon }) => trailingIcon && '0px'};
   -webkit-tap-highlight-color: transparent;
 
   :not(:placeholder-shown) + label {

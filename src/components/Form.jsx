@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { Autocomplete } from '@mui/material'
-import { states, entityInfo, months, purposes } from './utils/StaticData'
+import { states, entityInfo, months, purposes } from '../utils/StaticData'
 import {
   Slide,
   Row,
@@ -11,7 +11,6 @@ import {
   CustomTextField,
 } from './styles/Form.styled'
 
-import { Input, Border, Label, Error } from './styles/InputField.styled'
 import {
   faAngleLeft,
   faAngleRight,
@@ -29,7 +28,7 @@ import {
   lettersOnly,
   phoneValue,
   findEmptyValues,
-} from './utils/Validations'
+} from '../utils/Validations'
 import CardSelect from './CardSelect'
 import InputField from './InputField'
 function Form() {
@@ -182,24 +181,24 @@ function Form() {
       <h1>Which state is your business in?</h1>
       <Row>
         <Autocomplete
+          autoSelect
+          sx={{ width: 300, mx: 2, my: 2 }}
           options={months}
           value={form.month || ''}
           onChange={(e, value) => handleChange(e, value, 'month')}
           isOptionEqualToValue={(option, value) => option.value === value.value}
           renderInput={(params) => (
-            <Border ref={params.InputProps.ref} error={formErrors.month}>
-              <Input
-                size={25}
-                {...params.inputProps}
-                placeholder={'New York'}
-              />
-              <Label>Search and select month</Label>
-              <Error>{formErrors.month}</Error>
-            </Border>
+            <CustomTextField
+              {...params}
+              name={'month'}
+              error={formErrors.month ? true : false}
+              helperText={formErrors.month}
+              label='Search and select month'
+            />
           )}
         />
         <InputField
-          size={5}
+          size={10}
           maxLength={4}
           value={form.year || ''}
           label={'YYYY'}
